@@ -1,0 +1,70 @@
+Layouts:
+
+--Header (narrow)--
+[developer.esha.com]
+<query>[Search][My List]
+[Nutrients][FoodUnits]
+
+--Header (wide)--
+[developer.esha.com]
+<query>[Search][My List][Nutrients][FoodUnits]
+
+--Search (narrow)--
+{spellcheck||noquery||none}?
+*[Food description]?
+[First]?[Prev]?[Next]?
+{url} [JSON]
+
+--Search (wide)--
+{spellcheck||description||noquery||none}
+[Food quantity+unit+description+(product)?]?
+[First]?[Prev]?[Next]? {url}[JSON]
+
+--Food (narrow)--
+{description}
+<quantity><unit>
+[Add][JSON]
+[product]?[supplier]?[group]?
+
+--Food (wide)--
+{description} <quantity><unit> [Add] [JSON]
+{product:}[product]?
+{supplier:}[supplier]?
+{group:}[group]?
+
+--List (narrow)--
+[Analysis] [Clear] [JSON]
+*[Food description]
+
+--List (wide)--
+[Analysis] [Clear] [JSON]
+*[Food quantity+unit+description+(product)?]
+
+--Analysis--
+{valuesHeader} [JSON]
+*{nutrient+value+unit}
+{itemsHeader} [JSON]
+*[Item description]
+{url} [JSON]
+{apikeyLimited}?
+
+--Item--
+{quantity+unit}{description}
+{lastModified: modified}
+{label: discontinued}? [JSON]
+
+--FoodUnits--
+{url} [JSON]
+*{description}{id}
+
+--Nutrients--
+{url} [JSON]
+*{description+unit}{id}
+
+--JSON--
+[Copy]
+{json}
+[Copy]
+
+--Footer--
+{esha.com}

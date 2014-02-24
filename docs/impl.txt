@@ -1,0 +1,50 @@
+Server:
+	aws? or appengine? - host
+	??? - platform
+	??? - proxy impl
+
+Client Platform:
+	yeoman - scaffolding (incl CSS reset??)
+	grunt - build
+	bower - dependency management
+	eventi - events
+	state? or new router? - history
+	view - display control
+	values - binding
+	reqwest - ajax
+	store - local storage (for My List)
+	api.js - api configuration
+	html.js? or new domx? - dom
+	??? - json syntax highlighting
+	??? - json formatting
+
+App:
+	index.css? or index.sass?
+		- toggles
+		- layout
+		- styles
+		- wide adaptations
+			- layout
+			- styles
+	index.js
+		- API structure
+		- event handlers
+		- utilities
+	index.html
+		- boilerplate
+		- css
+		- browsehappy
+		- header
+		- search (/?query=/.*/&spell=/(true|false)?/&count=/\d/?&start=/\d/?)
+		- food
+		- list (/list)
+		- analysis (/analysis)
+		- item
+		- foodunits (/foodunits)
+		- nutrients (/nutrients)
+		- json (/json/{search|food|list|analysis|foodunits|nutrients|item})
+		- scripts
+		- footer
+
+Notes:
+	- views w/o necessary data (e.g. /analysis or /json/search) will revert to root

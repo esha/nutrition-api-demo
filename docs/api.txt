@@ -1,0 +1,17 @@
+API (v1):
+	Food Units
+		GET: [Food Unit]
+		Food Unit: {id, description}
+	Nutrients
+		GET: [Nutrient]
+		Nutrient: {id, description, unit}
+	Search
+		GET: query, count, start, spell
+		 ->: {query, total, first_page, next_page, prev_page, items[Food]}
+		Food: {id, description, group, product, supplier, quantity, unit, units}
+	Analysis:
+		POST: {items[Food Item]}
+		  ->: {items[Food], results[Nutrient Data Point]}
+		Food Item: {id, quantity, unit}
+		Food: {id, description, quantity, unit, modified, discontinued}
+		Nutrient Data Point: {nutrient, value}

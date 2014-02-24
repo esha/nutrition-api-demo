@@ -1,0 +1,37 @@
+Work Flow:
+	Header - static
+		Search (type+click)
+		FoodUnits (click)
+		Nutrients (click)
+		My Lists (click)
+		developer.esha.com (click)
+	Search - replace content
+		Food (scroll+click+click)
+		Next (click)
+		Prev (click)
+		First (click)
+		JSON (click)
+	My List - replace content
+		Analysis (click)
+		Clear (click)
+		Food (scroll+click)
+	Food - expand element
+		Quantity (type)
+		Unit (pick)
+		Add/Remove (click)
+	Analysis - replace content
+		(scroll)
+		Item (click)
+		JSON (click)
+	Item - expand element
+	    JSON (click)
+	FoodUnits - replace content
+		(scroll)
+		JSON (click)
+	Nutrients - replace content
+		(scroll)
+		JSON (click)
+	JSON - replace content
+		(scroll)
+		Copy [click]
+
