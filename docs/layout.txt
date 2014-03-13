@@ -2,8 +2,8 @@ Layouts:
 
 --Header (narrow)--
 [developer.esha.com]
-<query>[Search][My List]
-[Nutrients][FoodUnits]
+<query>[Search]
+[My List][Nutrients][FoodUnits]
 
 --Header (wide)--
 [developer.esha.com]
@@ -64,7 +64,6 @@ Layouts:
 --JSON--
 [Copy]
 {json}
-[Copy]
 
 --Footer--
 {esha.com}

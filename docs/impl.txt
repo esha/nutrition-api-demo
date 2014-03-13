@@ -16,7 +16,6 @@ Client Platform:
 	api.js - api configuration
 	html.js? or new domx? - dom
 	??? - json syntax highlighting
-	??? - json formatting
 
 App:
 	index.css? or index.sass?
