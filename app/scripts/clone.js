@@ -9,7 +9,7 @@
         value: function clone(insert, fill) {
             if (!insert || typeof insert === 'object') {
                 fill = insert;
-                insert = this.getAttribute('insert') || 'next';
+                insert = this.getAttribute('insert') || 'last';
             }
             return _.main(this, insert, fill);
         }

@@ -18,12 +18,17 @@
             return !val && val !== 0 && val !== false ? url :
                 url + (url.indexOf('?')>0 ? '&':'?') + key + '=' + val;
         },
-        search: function() {
+        search: function(e, path, query) {
             var params = HTML.query('#params',1).values(),
                 input = HTML.query('input[name=query]');
-            params.query = input.value;
+            if (query) {
+                params.query = query;
+                input.value = decodeURIComponent(query);
+            } else {
+                params.query = encodeURIComponent(input.value);
+            }
             if (params.query) {
-                Eventi.fire.location('#results');
+                Eventi.fire.location('#query='+params.query);
             } else {
                 input.focus();
             }
@@ -73,9 +78,11 @@
         }
     };
 
-    Eventi.types('clear','location');
+    Eventi.types('search', 'clear','location');
     Eventi.fy(window.EventTarget.prototype);
     Eventi.on.location(/#(nutrients|foodunits)/, _.resource);
     Eventi.on.location('#json', _.json);
+    Eventi.on.location('#query={query}', _.search);
+    Eventi.on.search(_.search);
 
 })(window.Eventi, document.documentElement, jQuery.ajax, window.store);

@@ -26,7 +26,7 @@
                 <div class="row">
                     <div name="search" class="col-md-6">
                         <input type="text" name="query">
-                        <button click="app.search">Search</button>
+                        <button click="search">Search</button>
                     </div>
                     <ul class="nav nav-pills col-md-6">
                         <li><a href="/#list">My List</a></li>
@@ -58,7 +58,7 @@
                         for "<span name="results.query">{{results.query}}</span>"
                     </p>
                 </div>
-                <div clone="#food" insert="next"></div>
+                <div clone="#food"></div>
                 <div class="row">
                     <div id="paging" class="col-md-6">
                         <a click="first">First</a>
@@ -92,7 +92,7 @@
                     <button click="clear">Clear</button>
                     <button click="json#list">View As JSON</button>
                 </div>
-                <div clone="#food" insert="after"></div>
+                <div clone="#food"></div>
             </div>
 
             <div view="#analysis">

@@ -3,7 +3,7 @@ function _debug(o, key) {
     var fn = o[key];
     o[key] = function() {
         console.log(key, 'arguments', arguments);
-        var ret = fn.apply(this, arguments);
+        var ret = fn.apply(this, Array.prototype.slice.call(arguments));
         if (ret !== undefined) {
             console.debug(key, 'return', ret);
             return ret;
@@ -18,5 +18,5 @@ function debug(o) {
     }
 }
 debug(window.app);
-debug(window.Clone);
+//debug(window.Clone);
 //debug(window.Values);
