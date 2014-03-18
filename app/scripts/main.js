@@ -1,5 +1,6 @@
 (function(Eventi, HTML, ajax, store) {
     'use strict';
+
     var _ = window.app = {
         base: 'http://api.esha.com',
         apikeyToBeHidden: '',
@@ -28,7 +29,10 @@
                 params.query = encodeURIComponent(input.value);
             }
             if (params.query) {
-                Eventi.fire.location('#query='+params.query);
+                var path = '#query='+params.query;
+                if (location.hash !== path) {
+                    Eventi.fire.location(path);
+                }
             } else {
                 input.focus();
             }
