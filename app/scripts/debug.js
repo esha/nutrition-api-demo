@@ -17,6 +17,6 @@ function debug(o) {
         }
     }
 }
-debug(window.app);
+//debug(window.app);
 //debug(window.Clone);
 //debug(window.Values);
