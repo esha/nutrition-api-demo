@@ -6,6 +6,7 @@
         <title>ESHA Web Services - Demo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="views" content="query list analysis nutrients foodunits json">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
@@ -34,28 +35,28 @@
                         <li><a href="/#foodunits">FoodUnits</a></li>
                     </ul>
                 </div>
-                <div id="api" class="api row">
-                    <span class="col-sm-1">API</span>
-                    <span class="col-sm-6">
-                        URL: <span name="url"></span>
-                    </span>
-                    <span class="col-sm-4">
-                        Method: <span name="method"></span>
-                    </span>
-                    <span class="col-sm-1">
-                        <button click="app.json" title="View JSON Response">JSON</button>
-                    </span>
-                </div>
+            </div>
+            <div id="api" class="hide-start row">
+                <h5>Last Call:</h5>
+                <span class="col-sm-8">
+                    URL: <span name="url" class="small"></span>
+                </span>
+                <span class="col-xs-6 col-sm-2">
+                    Method: <span name="method"></span>
+                </span>
+                <span class="col-xs-6 col-sm-2">
+                    <button click="app.json" title="View JSON Response">View JSON</button>
+                </span>
             </div>
 
-            <div id="results" view="#query">
+            <div id="results" class="view-query">
                 <div class="row hidden" id="feedback">
-                    <p class="none spellcheck">
-                        No results were found for "<span name="query">{{query}}</span>"
+                    <p class="none spellcheck text-warning">
+                        No results were found for "<span name="query"></span>"
                     </p>
                     <p class="description">
-                        Showing <span name="results.items.length">{{total}}</span>
-                        for "<span name="results.query">{{results.query}}</span>"
+                        Showing <span name="results.items.length"></span>
+                        for "<span name="results.query"></span>"
                     </p>
                 </div>
                 <div clone="#food"></div>
@@ -75,18 +76,22 @@
 
             <div clone id="food">
                 <div class="food row">
-                    <p class="amount col-sm-4 hidden-xs">
-                        <span name="quantity">{{quantity}}</span>
-                        <span name="unit">{{unit}}</span>
-                    </p>
-                    <p class="col-sm-8">
-                        <span name="description">{{description}}</span>
-                        <span class="hidden-md" name="product">{{product}}</span>
-                    </p>
+                    <span class="amount">
+                        <span name="quantity" class="col-sm-1 visible-sm"></span>
+                        <span name="unit.description" class="col-sm-2 visible-sm"></span>
+                    </span>
+                    <span class="description col-xs-10 col-sm-7">
+                        <span name="description"></span>
+                        <span name="product" class="visible-sm">({{product}})</span>
+                    </span>
+                    <span class="col-xs-2 col-sm-2">
+                        <button click="add" class="view-query">Add<span class="visible-sm">&nbsp;To List</span></button>
+                        <button click="remove" class="view-list">Remove</button>
+                    </span>
                 </div>
             </div>
 
-            <div view="#list">
+            <div class="view-list">
                 <div id="controls" class="row">
                     <button click="analysis">Analyze</button>
                     <button click="clear">Clear</button>
@@ -95,7 +100,7 @@
                 <div clone="#food"></div>
             </div>
 
-            <div view="#analysis">
+            <div class="view-analysis">
                 <h3>Nutrient Values:</h3>
                 <div clone insert="last">
                     <p class="row">
@@ -122,28 +127,26 @@
                 </div>
             </div>
 
-            <div view="#foodunits">
+            <div class="view-foodunits">
                 <div clone insert="last">
                     <p class="row">
-                        <span class="col-sm-4" name="description"></span>
-                        <span class="col-sm-8 hidden-sm" name="id"></span>
+                        <span class="col-xs-4" name="description"></span>
+                        <span class="col-xs-8" name="id"></span>
                     </p>
                 </div>
             </div>
 
-            <div view="#nutrients">
+            <div class="view-nutrients">
                 <div clone insert="last">
                     <p class="row">
-                        <span class="col-sm-4">
-                            <span name="description"></span>
-                            <span name="unit hidden-xs"></span>
-                        </span>
-                        <span class="col-sm-8 hidden-sm" name="id"></span>
+                        <span name="description" class="col-xs-4"></span>
+                        <span name="unit" class="col-xs-2"></span>
+                        <span class="col-xs-6 visible-sm" name="id"></span>
                     </p>
                 </div>
             </div>
 
-            <div view="#json">
+            <div class="view-json">
                 <pre name="json">{
   "json": "goes here",
   "after": "you make a call"

@@ -32,6 +32,16 @@ body {
     padding-bottom: 19px;
 }
 
+#api {
+    margin-top: -30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 15px;
+}
+[name=method] {
+    text-transform: uppercase;
+}
+
 /* Custom page footer */
 .footer {
     padding-top: 19px;
@@ -85,5 +95,11 @@ body {
     /* Remove the bottom border on the jumbotron for visual effect */
     .jumbotron {
         border-bottom: 0;
+    }
+}
+
+@media (min-width: 769px) {
+    .visible-sm {
+        display: inline-block !important;
     }
 }
