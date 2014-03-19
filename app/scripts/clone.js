@@ -80,6 +80,7 @@
             } else {
                 el.setAttribute('data-values', JSON.stringify(values));
             }
+            Object.defineProperty(el, 'cloneValues', {value:values});
         },
         index: function(el) {
             var all = el.querySelectorAll('.cloned');
