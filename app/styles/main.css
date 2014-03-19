@@ -38,12 +38,12 @@ body {
     border-bottom: 1px solid #e5e5e5;
     margin-bottom: 15px;
 }
-[name=method] {
-    text-transform: uppercase;
-}
 
-.foo [click] {
-    cursor: pointer;
+.none {
+    display: none;
+}
+.noClones + .none {
+    display: block;
 }
 
 /* Custom page footer */

@@ -30,6 +30,7 @@
                 node.appendChild(el.childNodes[i].cloneNode(true));
             }
             el.innerHTML = '';
+            el.classList.add('noClones');
             Object.defineProperty(el, 'cloneSource', {
                 value: node,
                 writeable: true
@@ -47,6 +48,7 @@
                 for (var i=0, m=values.length; i<m; i++) {
                     ret.push(_.clone(target, source, insert, values[i]));
                 }
+                target.classList.toggle('noClones', !values.length);
                 _.index(target);
                 return ret.length === 1 ? ret[0] : ret;
             }
