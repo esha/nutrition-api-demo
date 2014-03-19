@@ -3,7 +3,6 @@
 
     var _ = window.app = {
         base: 'http://api.esha.com',
-        apikeyToBeHidden: '',
         paths: {
             nutrients: '/nutrients',
             foodunits: '/food-units',
@@ -62,7 +61,8 @@
                     store('list', _.items);
                 }, 100);
             }
-            store('json', _.items);
+            HTML.query('#api').values({url:'n/a',method:'n/a'});
+            store('json', _.analysisBody());
         },
         add: function() {
             var values = this.parentNode.cloneValues;
@@ -77,9 +77,76 @@
         clear: function() {
             _.items = [];
             _.list();
+            store.remove('analysis');
         },
-        analysis: function(e) {
-            console.log('TODO', e);
+        analysisBody: function() {
+            var body = { items: [] };
+            _.items.forEach(function(item) {
+                body.items.push({
+                    id: item.id,
+                    quantity: item.quantity,
+                    unit: item.unit.id
+                });
+            });
+            return body;
+        },
+        analyze: function() {
+            _.ajax('analysis', JSON.stringify(_.analysisBody()), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).done(function(response) {
+                console.log(response);
+            }).fail(function() {
+                //TODO: get proxy running so we don't need to fake this
+                var response = {
+                    name: 'TODO: get proxy up so this is not fake',
+                    items: [{
+                        id: 'urn:uuid:17dbb668-f3f4-4822-8566-f46496887edc',
+                        description: 'Broccoli, fresh',
+                        quantity: 0.5,
+                        unit: 'urn:uuid:dfad1d25-17ff-4201-bba0-0711e8b88c65',
+                        modified: '2011-10-04'
+                    }],
+                    results: [{
+                        nutrient: 'urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9',
+                        value: 15.47
+                    }]
+                };
+                if (!_.items.length) {
+                    response.items = [];
+                    response.results[0].value = 0;
+                }
+                store('json', response);
+                Eventi.on('^foodunits', function(e, units) {
+                    response.items.forEach(function(item) {
+                        item.unit = units[item.unit] || item.unit;
+                    });
+                    Eventi.on('^nutrients', function(e, nutrients) {
+                        response.results.forEach(function(result) {
+                            result.nutrient = nutrients[result.nutrient] || result.nutrient;
+                        });
+                        store('analysis', response);
+                        Eventi.fire.location('#analysis');
+                    });
+                });
+            });
+        },
+        analysis: function() {
+            var response = store('analysis');
+            if (!response) {
+                return Eventi.fire.location('#list');
+            }
+            setTimeout(function() {
+                var el = HTML.query('#analysis'),
+                    values = el.query('[clone].values'),
+                    items = el.query('[clone].items');
+                values.innerHTML = '';
+                items.innerHTML = '';
+                values.clone(response.results);
+                items.clone(response.items);
+            }, 100);
         },
         json: function(e) {
             var json = store('json');
@@ -98,23 +165,38 @@
             container.innerHTML = '';
             container.clone(response);
         },
-        ajax: function(name, data, method) {
+        ajax: function(name, data, opts) {
             var url = _.path(name);
-            if (data && method !== 'post') {
+            if (data && !(opts && opts.method === 'POST')) {
                 for (var key in data) {
                     url = _.param(url, key, data[key]);
                 }
                 data = null;
             }
-            var opts = {
-                method: method || 'get',
-                url: url,
-                data: data
-            };
+            if (!opts) {
+                opts = { method: 'GET' };
+            }
+            opts.url = url;
+            opts.data = data;
+
             HTML.query('#api').values(opts);
             return ajax(opts).then(function(response) {
                 store('json', response);
                 return response;
+            });
+        },
+        preprocess: function(resource) {
+            var clear = setTimeout(function() {
+                console.log('reloading page');
+                location.reload();
+            }, 1000);
+            ajax(_.path(resource)).done(function(list) {
+                clearTimeout(clear);
+                var hash = {};
+                list.forEach(function(member) {
+                    hash[member.id] = member;
+                });
+                Eventi.fire('^'+resource, hash);
             });
         }
     };
@@ -125,26 +207,13 @@
     Eventi.on.location('#json', _.json);
     Eventi.on.location('#query={query}', _.search);
     Eventi.on.location('#list', _.list);
+    Eventi.on.location('#analysis', _.analysis);
     Eventi.on.search(_.search);
     Eventi.on('items:add', '.food', _.add);
     Eventi.on('items:remove', '.food', _.remove);
     Eventi.on('items:clear', _.clear);
-    Eventi.on('items:analysis', _.analysis);
-
-    // preload and hash these resources singleton events
-    _.ajax('foodunits').then(function(units) {
-        var key = {};
-        units.forEach(function(unit) {
-            key[unit.id] = unit;
-        });
-        Eventi.fire('^foodunits', key);
-    });
-    _.ajax('nutrients').then(function(nutrients) {
-        var key = {};
-        nutrients.forEach(function(nutrient) {
-            key[nutrient.id] = nutrient;
-        });
-        Eventi.fire('^nutrients', key);
-    });
+    Eventi.on('items:analysis', _.analyze);
+    _.preprocess('nutrients');
+    _.preprocess('foodunits');
 
 })(window.Eventi, document.documentElement, jQuery.ajax, window.store);

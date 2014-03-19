@@ -39,26 +39,24 @@
 
             <div id="api" class="hide-start hide-list row">
                 <h5>API:</h5>
-                <span class="col-sm-8">
-                    URL: <span name="url" class="small"></span>
+                <span class="col-sm-7">
+                    URL: <span name="url" class="small">n/a</span>
                 </span>
-                <span class="col-xs-6 col-sm-2">
-                    Method: <span name="method"></span>
+                <span class="col-xs-6 col-sm-3">
+                    Method: <span name="method">n/a</span>
                 </span>
-                <span class="col-xs-6 col-sm-2">
+                <span class="col-xs-6 col-sm-2 hide-json">
                     <button click="app.json" title="View JSON Response">View JSON</button>
                 </span>
             </div>
 
             <div id="results" class="view-query">
-                <div class="row hidden" id="feedback">
-                    <p class="none spellcheck text-warning">
-                        No results were found for "<span name="query"></span>"
-                    </p>
-                    <p class="description">
-                        Showing <span name="results.items.length"></span>
-                        for "<span name="results.query"></span>"
-                    </p>
+                <div class="none row spellcheck text-warning">
+                    No results were found for "<span name="query"></span>"
+                </div>
+                <div class="row hidden description" id="feedback">
+                    Showing <span name="results.items.length"></span>
+                    for "<span name="results.query"></span>"
                 </div>
                 <div clone="#food"></div>
                 <div class="row">
@@ -99,32 +97,38 @@
                     <button click="app.json">View JSON</button>
                 </div>
                 <div clone="#food"></div>
+                <div class="none">
+                    Please do a search to add items.
+                </div>
             </div>
 
-            <div class="view-analysis">
+            <div id="analysis" class="view-analysis">
                 <h3>Nutrient Values:</h3>
-                <div clone insert="last">
+                <div class="values" clone insert="last">
                     <p class="row">
-                        <span class="col-sm-8" name="nutrient"></span>
+                        <span class="col-sm-8" name="nutrient.description"></span>
                         <span class="col-sm-4">
                             <span name="value"></span>
-                            <span name="unit"></span>
+                            <span name="nutrient.unit"></span>
                         </span>
                     </p>
                 </div>
-                <div id="limited">
-                    <sup>*</sup>The public apikey being used allows only Calorie values.
+                <div id="limited" class="small">
+                    The public apikey being used allows only Calorie values.
                 </div>
                 <hr/>
                 <h3>List Items:</h3>
-                <div clone insert="first">
+                <div class="items" clone insert="first">
                     <p class="row">
                         <span class="col-sm-4 hidden-xs">
                             <span name="quantity"></span>
-                            <span name="unit"></span>
+                            <span name="unit.description"></span>
                         </span>
                         <span class="col-sm-8" name="description"></span>
                     </p>
+                </div>
+                <div class="none">
+                    No items were analyzed.
                 </div>
             </div>
 
