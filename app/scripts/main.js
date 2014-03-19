@@ -51,6 +51,36 @@
             });
             items.clone(results.items);
         },
+        items: store('list')||[],
+        list: function() {
+            var all = HTML.query('#list'),
+                items = all.query('[clone]').only(0);
+            if (items.children.length !== _.items.length) {
+                setTimeout(function() {
+                    items.innerHTML = '';
+                    items.clone(_.items);
+                    store('list', _.items);
+                }, 100);
+            }
+            store('json', _.items);
+        },
+        add: function() {
+            var values = this.parentNode.cloneValues;
+            _.items.push(values);
+            Eventi.fire.location('#list');
+        },
+        remove: function() {
+            var index = this.parentNode.getAttribute('index');
+            _.items.splice(index, 1);
+            _.list();
+        },
+        clear: function() {
+            _.items = [];
+            _.list();
+        },
+        analysis: function(e) {
+            console.log('TODO', e);
+        },
         json: function(e) {
             var json = store('json');
             HTML.query('pre[name="json"]').innerHTML = json ? JSON.stringify(json, null, 2) : '';
@@ -89,12 +119,17 @@
         }
     };
 
-    Eventi.types('search', 'clear','location');
+    Eventi.types('search','clear','location');
     Eventi.fy(window.EventTarget.prototype);
     Eventi.on.location(/#(nutrients|foodunits)/, _.resource);
     Eventi.on.location('#json', _.json);
     Eventi.on.location('#query={query}', _.search);
+    Eventi.on.location('#list', _.list);
     Eventi.on.search(_.search);
+    Eventi.on('items:add', '.food', _.add);
+    Eventi.on('items:remove', '.food', _.remove);
+    Eventi.on('items:clear', _.clear);
+    Eventi.on('items:analysis', _.analysis);
 
     // preload and hash these resources singleton events
     _.ajax('foodunits').then(function(units) {

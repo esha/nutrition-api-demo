@@ -36,8 +36,9 @@
                     </ul>
                 </div>
             </div>
-            <div id="api" class="hide-start row">
-                <h5>Last Call:</h5>
+
+            <div id="api" class="hide-start hide-list row">
+                <h5>API:</h5>
                 <span class="col-sm-8">
                     URL: <span name="url" class="small"></span>
                 </span>
@@ -85,17 +86,17 @@
                         <span name="product" class="visible-sm">({{product}})</span>
                     </span>
                     <span class="col-xs-2 col-sm-2">
-                        <button click="add" class="view-query">Add<span class="visible-sm">&nbsp;To List</span></button>
-                        <button click="remove" class="view-list">Remove</button>
+                        <button click="items:add" class="view-query">Add<span class="visible-sm">&nbsp;To List</span></button>
+                        <button click="items:remove" class="view-list">Remove</button>
                     </span>
                 </div>
             </div>
 
-            <div class="view-list">
+            <div id="list" class="view-list">
                 <div id="controls" class="row">
-                    <button click="analysis">Analyze</button>
-                    <button click="clear">Clear</button>
-                    <button click="json#list">View As JSON</button>
+                    <button click="items:analysis">Analyze</button>
+                    <button click="items:clear">Clear</button>
+                    <button click="app.json">View JSON</button>
                 </div>
                 <div clone="#food"></div>
             </div>
