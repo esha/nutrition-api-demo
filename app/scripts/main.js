@@ -29,19 +29,26 @@
                 params.query = encodeURIComponent(input.value);
             }
             if (params.query) {
-                var path = '#query='+params.query;
+                path = '#query='+params.query;
                 if (location.hash !== path) {
                     Eventi.fire.location(path);
                 }
             } else {
                 input.focus();
             }
-            _.ajax('search', params).then(_.results);
+            Eventi.on('^foodunits', function(e, units) {
+                _.ajax('search', params).then(function(results) {
+                    _.results(results, units);
+                });
+            });
         },
-        results: function(results) {
+        results: function(results, units) {
             var all = HTML.query('#results'),
                 items = all.query('[clone]').only(0);
             items.innerHTML = '';
+            results.items.forEach(function(item) {
+                item.unit = units[item.unit] || item.unit;
+            });
             items.clone(results.items);
         },
         json: function(e) {
@@ -57,7 +64,7 @@
             });
         },
         resourceLoaded: function(path, response) {
-            var container = HTML.query('[view="'+path+'"] [clone]').only(0);
+            var container = HTML.query('.view-'+path.substring(1)+' [clone]').only(0);
             container.innerHTML = '';
             container.clone(response);
         },
@@ -88,5 +95,21 @@
     Eventi.on.location('#json', _.json);
     Eventi.on.location('#query={query}', _.search);
     Eventi.on.search(_.search);
+
+    // preload and hash these resources singleton events
+    _.ajax('foodunits').then(function(units) {
+        var key = {};
+        units.forEach(function(unit) {
+            key[unit.id] = unit;
+        });
+        Eventi.fire('^foodunits', key);
+    });
+    _.ajax('nutrients').then(function(nutrients) {
+        var key = {};
+        nutrients.forEach(function(nutrient) {
+            key[nutrient.id] = nutrient;
+        });
+        Eventi.fire('^nutrients', key);
+    });
 
 })(window.Eventi, document.documentElement, jQuery.ajax, window.store);
