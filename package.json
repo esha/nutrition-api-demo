@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "server.js",
   "dependencies": {
-    "statik": "~1.2.5"
+    "logfmt": "~1.0.0-pre3",
+    "express": "~3.4.8"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
