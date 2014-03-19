@@ -279,6 +279,17 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
+            heroku: {
+                files: [{
+                    expand: true,
+                    dest: '<%= yeoman.dist %>',
+                    cwd: 'heroku',
+                    src: [
+                        'Procfile',
+                        '*.js'
+                    ]
+                }]
+            },
             styles: {
                 expand: true,
                 dot: true,
@@ -350,6 +361,7 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
+        'copy:heroku',
         'rev',
         'usemin',
         'htmlmin'

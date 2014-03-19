@@ -1,7 +1,13 @@
 {
   "name": "sigyn",
   "version": "0.1.0",
-  "dependencies": {},
+  "description": "Demo for ESHA Web Services",
+  "author": "Nathan Bubna",
+  "license": "MIT",
+  "main": "web.js",
+  "dependencies": {
+    "statik": "~1.2.5"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
