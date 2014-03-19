@@ -277,17 +277,19 @@ module.exports = function (grunt) {
                         'styles/fonts/{,*/}*.*',
                         'bower_components/' + (this.includeCompass ? 'sass-' : '') + 'bootstrap/' + (this.includeCompass ? 'fonts/' : 'dist/fonts/') +'*.*'
                     ]
-                }]
-            },
-            heroku: {
-                files: [{
+                },
+                {
                     expand: true,
-                    dest: '<%= yeoman.dist %>',
                     cwd: 'heroku',
+                    dest: '<%= yeoman.dist %>',
                     src: [
                         'Procfile',
                         '*.js'
                     ]
+                },
+                {
+                    dest: '<%= yeoman.dist %>/package.json',
+                    src: 'package.json'
                 }]
             },
             styles: {
@@ -361,7 +363,6 @@ module.exports = function (grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
-        'copy:heroku',
         'rev',
         'usemin',
         'htmlmin'
