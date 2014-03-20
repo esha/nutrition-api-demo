@@ -44,7 +44,7 @@
         });
         views.define('start');
         document.head.appendChild(style);
-        Object.defineProperty(location, 'views', {value:views});
+        Object.defineProperty(document, 'views', {value:views});
         Eventi.on(views, 'location', function updateView(e, path) {
             views.update(path);
         });
