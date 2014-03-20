@@ -2,7 +2,7 @@
     'use strict';
 
     var _ = window.app = {
-        base: 'http://api.esha.com',
+        base: '/api',
         paths: {
             nutrients: '/nutrients',
             foodunits: '/food-units',
@@ -10,9 +10,7 @@
             search: '/foods'
         },
         path: function(name) {
-            var url = _.base + _.paths[name] + '?apikey=2s35wsxke74rcut8jqapbkyf';
-            console.log('TODO: set up proxy server to hide apikey');
-            return url;
+            return _.base + _.paths[name];
         },
         param: function(url, key, val) {
             return !val && val !== 0 && val !== false ? url :
@@ -97,27 +95,6 @@
                     'Content-Type': 'application/json'
                 }
             }).done(function(response) {
-                console.log(response);
-            }).fail(function() {
-                //TODO: get proxy running so we don't need to fake this
-                var response = {
-                    name: 'TODO: get proxy up so this is not fake',
-                    items: [{
-                        id: 'urn:uuid:17dbb668-f3f4-4822-8566-f46496887edc',
-                        description: 'Broccoli, fresh',
-                        quantity: 0.5,
-                        unit: 'urn:uuid:dfad1d25-17ff-4201-bba0-0711e8b88c65',
-                        modified: '2011-10-04'
-                    }],
-                    results: [{
-                        nutrient: 'urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9',
-                        value: 15.47
-                    }]
-                };
-                if (!_.items.length) {
-                    response.items = [];
-                    response.results[0].value = 0;
-                }
                 store('json', response);
                 Eventi.on('^foodunits', function(e, units) {
                     response.items.forEach(function(item) {
@@ -179,7 +156,10 @@
             opts.url = url;
             opts.data = data;
 
-            HTML.query('#api').values(opts);
+            HTML.query('#api').values({
+                url: opts.url.replace(_.base, ''),
+                method: opts.method
+            });
             return ajax(opts).then(function(response) {
                 store('json', response);
                 return response;
