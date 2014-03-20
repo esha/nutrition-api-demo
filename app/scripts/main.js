@@ -166,12 +166,7 @@
             });
         },
         preprocess: function(resource) {
-            var clear = setTimeout(function() {
-                console.log('reloading page');
-                location.reload();
-            }, 1000);
             ajax(_.path(resource)).done(function(list) {
-                clearTimeout(clear);
                 var hash = {};
                 list.forEach(function(member) {
                     hash[member.id] = member;
