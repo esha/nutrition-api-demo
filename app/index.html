@@ -25,9 +25,9 @@
             <div class="header">
                 <h2><a href="http://developer.esha.com">ESHA Web Services</a></h2>
                 <div class="row">
-                    <div name="search" class="col-sm-6">
+                    <div name="search" class="col-sm-6" click="search">
                         <input type="text" name="query">
-                        <button click="search">Search</button>
+                        <button>Search</button>
                     </div>
                     <div id="params" class="hidden col-sm-6">
                         Count: <input type="text" name="count" size="3" value="25">
@@ -56,14 +56,18 @@
             </div>
 
             <div id="results" class="view-query">
-                <div class="none row spellcheck text-warning">
-                    No results were found for "<span name="query"></span>"
+                <div class="row spellcheck text-warning">
+                    "<span name="query"></span>" appears to be misspelled.
                 </div>
-                <div class="row hidden description" id="feedback">
-                    Showing <span name="results.items.length"></span>
-                    for "<span name="results.query"></span>"
+                <div class="row" id="feedback">
+                    Showing <span name="items.length"></span>
+                    of <span name="total"></span>
+                    for "<span name="query"></span>"
                 </div>
                 <div clone="#food"></div>
+                <div class="none row text-warning">
+                    No results were found for "<span name="query"></span>"
+                </div>
                 <div class="row">
                     <a click="page" id="first">First</a>
                     <a click="page" id="prev">Previous</a>
@@ -199,7 +203,6 @@
         <script src="scripts/clone.js"></script>
         <script src="scripts/values.js"></script>
         <script src="scripts/main.js"></script>
-        <script src="scripts/debug.js"></script>
         <!-- endbuild -->
 </body>
 </html>

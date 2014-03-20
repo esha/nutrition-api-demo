@@ -30,6 +30,7 @@
                 if (location.hash !== path) {
                     Eventi.fire.location(path);
                 }
+                HTML.query('#results').values('query', params.query);
             } else {
                 input.focus();
             }
@@ -48,7 +49,7 @@
                 return key.indexOf('_page') > 0;
             });
             HTML.query('[click*=page]').each(function(el) {
-                el.style.display = pages.indexOf(el.id+'_page') >= 0 ? '' : 'none';
+                el.classList.toggle('hidden', !results.total || pages.indexOf(el.id+'_page') < 0);
             });
         },
         page: function(e) {
@@ -67,6 +68,13 @@
                 item.unit = units[item.unit] || item.unit;
             });
             items.clone(results.items);
+
+            var feedback = all.query('#feedback');
+            feedback.classList.toggle('hidden', !results.items.length);
+            feedback.values(results);
+
+            var param = HTML.query('input[name=query]').value;
+            all.classList.toggle('misspelled', results.query !== param);
         },
         items: store('list')||[],
         list: function() {
@@ -197,7 +205,6 @@
     };
 
     Eventi.types('search','clear','location');
-    Eventi.fy(window.EventTarget.prototype);
     Eventi.on.location(/#(nutrients|foodunits)/, _.resource);
     Eventi.on.location('#json', _.json);
     Eventi.on.location('#query={query}', _.search);

@@ -45,6 +45,12 @@ body {
 .noClones + .none {
     display: block;
 }
+.spellcheck {
+    display: none;
+}
+.misspelled .spellcheck {
+    display: block;
+}
 
 [click] {
     cursor: pointer;
