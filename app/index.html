@@ -25,11 +25,16 @@
             <div class="header">
                 <h2><a href="http://developer.esha.com">ESHA Web Services</a></h2>
                 <div class="row">
-                    <div name="search" class="col-md-6">
+                    <div name="search" class="col-sm-6">
                         <input type="text" name="query">
                         <button click="search">Search</button>
                     </div>
-                    <ul class="nav nav-pills col-md-6">
+                    <div id="params" class="hidden col-sm-6">
+                        Count: <input type="text" name="count" size="3" value="25">
+                        Start: <input type="text" name="start" size="2" value="0">
+                        Spellcheck: <input type="checkbox" name="spellcheck" checked>
+                    </div>
+                    <ul class="nav nav-pills col-sm-6">
                         <li><a href="/#list">My List</a></li>
                         <li><a href="/#nutrients">Nutrients</a></li>
                         <li><a href="/#foodunits">FoodUnits</a></li>
@@ -60,16 +65,9 @@
                 </div>
                 <div clone="#food"></div>
                 <div class="row">
-                    <div id="paging" class="col-md-6">
-                        <a click="first">First</a>
-                        <a click="prev">Previous</a>
-                        <a click="next">Next</a>
-                    </div>
-                    <div id="params" class="col-md-6">
-                        Count: <input type="text" name="count" size="3">
-                        Start: <input type="text" name="start" size="2">
-                        Spellcheck: <input type="checkbox" name="spellcheck">
-                    </div>
+                    <a click="page" id="first">First</a>
+                    <a click="page" id="prev">Previous</a>
+                    <a click="page" id="next">Next</a>
                 </div>
             </div>
 

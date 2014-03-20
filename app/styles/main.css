@@ -46,6 +46,10 @@ body {
     display: block;
 }
 
+[click] {
+    cursor: pointer;
+}
+
 /* Custom page footer */
 .footer {
     padding-top: 19px;

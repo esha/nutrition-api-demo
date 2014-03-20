@@ -9,8 +9,8 @@
             analysis: '/analysis',
             search: '/foods'
         },
-        path: function(name) {
-            return _.base + _.paths[name];
+        path: function(path) {
+            return _.base + (_.paths[path] || path);
         },
         param: function(url, key, val) {
             return !val && val !== 0 && val !== false ? url :
@@ -33,11 +33,31 @@
             } else {
                 input.focus();
             }
+            _.query('search', params);
+        },
+        query: function(name, params) {
             Eventi.on('^foodunits', function(e, units) {
-                _.ajax('search', params).then(function(results) {
+                _.ajax(name, params).then(function(results) {
                     _.results(results, units);
+                    _.controls(results);
                 });
             });
+        },
+        controls: function(results) {
+            var pages = Object.keys(results).filter(function(key) {
+                return key.indexOf('_page') > 0;
+            });
+            HTML.query('[click*=page]').each(function(el) {
+                el.style.display = pages.indexOf(el.id+'_page') >= 0 ? '' : 'none';
+            });
+        },
+        page: function(e) {
+            var results = store('json'),
+                page = e.target.id+'_page',
+                url = results && results[page];
+            if (url) {
+                _.query(url);
+            }
         },
         results: function(results, units) {
             var all = HTML.query('#results'),
@@ -142,8 +162,8 @@
             container.innerHTML = '';
             container.clone(response);
         },
-        ajax: function(name, data, opts) {
-            var url = _.path(name);
+        ajax: function(path, data, opts) {
+            var url = _.path(path);
             if (data && !(opts && opts.method === 'POST')) {
                 for (var key in data) {
                     url = _.param(url, key, data[key]);
@@ -188,6 +208,7 @@
     Eventi.on('items:remove', '.food', _.remove);
     Eventi.on('items:clear', _.clear);
     Eventi.on('items:analysis', _.analyze);
+    Eventi.on('page', _.page);
     _.preprocess('nutrients');
     _.preprocess('foodunits');
 
