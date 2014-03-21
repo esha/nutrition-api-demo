@@ -85,14 +85,14 @@
             input: function(){ return this.value; },
             textarea: 'input',
             select: function() {
-                var label = this.getAttribute('label') !== 'false',
+                var label = this.getAttribute('label'),
                     opts = this.querySelectorAll('option'),
                     vals = [];
                 for (var i=0,m=opts.length; i<m; i++) {
                     var o = opts[i];
                     if (o.selected) {
-                        vals.push(label ? { value: o.value, label: o.label }
-                                        : o.value);
+                        vals.push(label && label !== 'false' ?
+                            { value: o.value, label: o.label } : o.value);
                     }
                 }
                 return this.hasAttribute('multiple') ? vals : vals[0];
@@ -233,7 +233,7 @@
             var contexts = [props, this, window];
             for (var i=0, m=keys.length; i<m; i++) {
                 for (var j=0, n=contexts.length; j<n; j++) {
-                    if (keys[j]) {
+                    if (keys[i]) {
                         var val = _.resolve(keys[i], contexts[j]);
                         if (typeof val === 'string') {
                             val = contexts[0][val];// can redirect to a configured fn
