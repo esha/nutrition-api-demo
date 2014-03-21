@@ -85,11 +85,18 @@
 
             <div clone id="food">
                 <div class="food row">
-                    <span class="amount">
-                        <span name="quantity" class="col-sm-1 visible-sm"></span>
-                        <span name="unit.description" class="col-sm-2 visible-sm"></span>
+                    <span class="view-query visible-sm">
+                        <span name="quantity" class="col-sm-1"></span>
+                        <span name="unit.description" class="col-sm-2"></span>
                     </span>
-                    <span class="description col-xs-10 col-sm-7">
+                    <span class="view-list visible-sm col-sm-3">
+                        <input name="quantity" size="2">
+                        <select name="units" clone class="hidden">
+                            <option value="{{id}}">{{description}}</option>
+                        </select>
+                        <span name="unit.description"></span>
+                    </span>
+                    <span class="col-xs-10 col-sm-7">
                         <span name="description"></span>
                         <span name="product" class="visible-sm">({{product}})</span>
                     </span>
