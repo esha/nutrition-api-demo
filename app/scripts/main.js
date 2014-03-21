@@ -73,7 +73,11 @@
             });
             items.clone(results.items);
 
-            var feedback = all.query('#feedback');
+            var feedback = all.query('#feedback'),
+                url = HTML.values('url'),
+                start = url && url.match(/start=(\d+)/);
+            results.start = start && parseInt(start[1]) || 0;
+            results.end = results.start + results.items.length - 1;
             feedback.classList.toggle('hidden', !results.items.length);
             feedback.values(results);
 
