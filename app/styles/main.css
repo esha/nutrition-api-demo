@@ -51,7 +51,9 @@ body {
 .misspelled .spellcheck {
     display: block;
 }
-
+label {
+    margin-left: 3px;
+}
 [click] {
     cursor: pointer;
 }

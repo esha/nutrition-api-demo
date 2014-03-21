@@ -28,17 +28,24 @@
                     <div name="search" class="col-sm-6" click="search">
                         <input type="text" name="query">
                         <button>Search</button>
-                    </div>
-                    <div id="params" class="hidden col-sm-6">
-                        Count: <input type="text" name="count" size="3" value="25">
-                        Start: <input type="text" name="start" size="2" value="0">
-                        Spellcheck: <input type="checkbox" name="spellcheck" checked>
+                        <a click="options" class="small">Options</a>
                     </div>
                     <ul class="nav nav-pills col-sm-6">
                         <li><a href="/#list">My List</a></li>
                         <li><a href="/#nutrients">Nutrients</a></li>
                         <li><a href="/#foodunits">FoodUnits</a></li>
                     </ul>
+                    <div id="options" class="hidden col-sm-6 small">
+                        <label for="count">Count:</label>
+                        <input type="text" name="count" size="3" value="25">
+                        <label for="start">Start:</label>
+                        <input type="text" name="start" size="2" value="0">
+                        <label for="spell">Spellcheck:</label>
+                        <select name="spell">
+                            <option value="true">On</option>
+                            <option value="false">Off</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 

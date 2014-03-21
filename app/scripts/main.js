@@ -17,7 +17,8 @@
                 url + (url.indexOf('?')>0 ? '&':'?') + key + '=' + val;
         },
         search: function(e, path, query) {
-            var params = HTML.query('#params',1).values(),
+            var options = HTML.query('#options',1),
+                params = options.classList.contains('hidden') ? {} : options.values(),
                 input = HTML.query('input[name=query]');
             if (query) {
                 params.query = query;
@@ -48,7 +49,7 @@
             var pages = Object.keys(results).filter(function(key) {
                 return key.indexOf('_page') > 0;
             });
-            HTML.query('[click*=page]').each(function(el) {
+            HTML.query('[click=page]').each(function(el) {
                 el.classList.toggle('hidden', !results.total || pages.indexOf(el.id+'_page') < 0);
             });
         },
@@ -59,6 +60,9 @@
             if (url) {
                 _.query(url);
             }
+        },
+        options: function() {
+            HTML.query('#options').classList.toggle('hidden');
         },
         results: function(results, units) {
             var all = HTML.query('#results'),
@@ -216,6 +220,7 @@
     Eventi.on('items:clear', _.clear);
     Eventi.on('items:analysis', _.analyze);
     Eventi.on('page', _.page);
+    Eventi.on('options', _.options);
     _.preprocess('nutrients');
     _.preprocess('foodunits');
 
