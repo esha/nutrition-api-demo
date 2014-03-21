@@ -1,52 +1,55 @@
 (function(Eventi, document, location) {
     'use strict';
 
-    var views = [];
-    views.define = function(name, re) {
-        views.push({
-            name: name,
-            re: re instanceof RegExp ? re : new RegExp(re || name)
-        });
-        views.style.innerHTML += views.rule(name);
-    };
-    views.rule = function(name) {
-        return '.view-'+name+
-             ', .'+name+' .hide-'+name+' { display: none; }\n'+
-               '.'+name+' .view-'+name+' { display: block; }\n'+
-               '.'+name+' span.view-'+name+
-             ', .'+name+' a.view-'+name+
-             ', .'+name+' input.view-'+name+
-             ', .'+name+' button.view-'+name+
-             ', .'+name+' select.view-'+name+
-             ', .'+name+' label.view-'+name+
-             ', .'+name+' img.view-'+name+' { display: inline-block; }\n';
-    };
-    views.update = function(path) {
-        var url = path || location.pathname + location.search + location.hash,
-            start = true;
-        for (var i=0, m=views.length; i<m; i++) {
-            var view = views[i],
-                show = view.re.test(url);
-            document.body.classList.toggle(view.name, show);
-            if (show) {
-                start = false;
-            }
+    var _ = window.View = {
+        list: [],
+        define: function(name, re) {
+            _.list.push({
+                name: name,
+                re: re instanceof RegExp ? re : new RegExp(re || name)
+            });
+            _.style.innerHTML += _.rules(name);
+        },
+        rules: function(name) {
+            return '.view-'+name+
+                 ', .'+name+'-on .hide-'+name+' { display: none !important; }\n'+
+                   '.'+name+'-on .view-'+name+' { display: block !important; }\n'+
+                   '.'+name+'-on span.view-'+name+
+                 ', .'+name+'-on a.view-'+name+
+                 ', .'+name+'-on input.view-'+name+
+                 ', .'+name+'-on button.view-'+name+
+                 ', .'+name+'-on select.view-'+name+
+                 ', .'+name+'-on label.view-'+name+
+                 ', .'+name+'-on img.view-'+name+' { display: inline-block !important; }\n';
+        },
+        update: function(path) {
+            var url = path || location.pathname + location.search + location.hash,
+                start = true;
+            _.list.forEach(function(view) {
+                var show = view.re.test(url);
+                _.toggle(view.name, show);
+                if (show) {
+                    start = false;
+                }
+            });
+            _.toggle('start', start);
+        },
+        toggle: function(name, on) {
+            document.body.classList.toggle(name+'-on', on);
         }
-        document.body.classList.toggle('start', start);
     };
 
-    var meta = document.querySelector('meta[name=views]');
+    var meta = document.querySelector('meta[name=view]');
     if (meta) {
-        var style = views.style = document.createElement('style'),
+        var style = _.style = document.createElement('style'),
             definitions = meta.getAttribute('content') || '';
         definitions.split(' ').forEach(function(view) {
-            views.define.apply(views, view.split('='));
+            _.define.apply(_, view.split('='));
         });
-        views.define('start');
+        _.define('start');
         document.head.appendChild(style);
-        Object.defineProperty(document, 'views', {value:views});
-        Eventi.on(views, 'location', function updateView(e, path) {
-            views.update(path);
+        Eventi.on(_, 'location', function view(e, path) {
+            _.update(path);
         });
     }
 
