@@ -1,11 +1,15 @@
 {
-  "name": "sigyn",
+  "name": "wsdemo",
   "version": "0.1.0",
   "description": "Demo for ESHA Web Services",
   "author": "Nathan Bubna",
   "license": "MIT",
   "main": "server.js",
-  "dependencies": {
+    "repository": {
+    "type": "git",
+    "url": "git://github.com/esha/wsdemo.git"
+  },
+"dependencies": {
     "logfmt": "~1.0.0-pre3",
     "express": "~3.4.8",
     "request": "~2.34.0"
