@@ -25,7 +25,9 @@
 
     var _ = window.Clone = {
         init: function(el) {
-            var node = document.createElement('div');
+            var newRoot = el.children.length > 1,
+                node = newRoot ? document.createElement('div')
+                              : document.createDocumentFragment();
             for (var i=0,m=el.childNodes.length; i<m; i++) {
                 node.appendChild(el.childNodes[i].cloneNode(true));
             }
@@ -54,10 +56,13 @@
             }
         },
         clone: function(target, source, insert, values) {
-            var clone = (source.cloneSource || source).cloneNode(true);
-            clone.classList.add('cloned');
+            var clone = (source.cloneSource || source).cloneNode(true),
+                root = clone.classList ? clone : clone.children[0];
+            if (root) {
+                root.classList.add('cloned');
+            }
             if (values) {
-                _.values(clone, values);
+                _.values(clone, values, root);
             }
             insert.call(target, clone);
             if (window.CustomEvent) {
@@ -74,15 +79,19 @@
             first: function(dom){ this.insertBefore(dom, this.childNodes[0]); },
             last: function(dom){ this.appendChild(dom); }
         },
-        values: function(el, values) {
+        values: function(el, values, root) {
             if (typeof values === 'function') {
                 values.call(el, el);
             } else if (typeof el.values === 'function') {
                 el.values(values);
-            } else {
-                el.setAttribute('data-values', JSON.stringify(values));
+            } else if (el.children.length) {
+                for (var i=0,m=el.children.length; i<m; i++) {
+                    _.values(el.children[i], values);
+                }
             }
-            Object.defineProperty(el, 'cloneValues', {value:values});
+            if (root) {
+                Object.defineProperty(root, 'cloneValues', {value:values});
+            }
         },
         index: function(el) {
             var all = el.querySelectorAll('.cloned');
