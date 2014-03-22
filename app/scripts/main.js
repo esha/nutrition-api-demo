@@ -1,4 +1,4 @@
-(function(Eventi, HTML, ajax, store) {
+(function(Eventi, HTML, ajax, store, Clone) {
     'use strict';
 
     var _ = window.app = {
@@ -70,6 +70,9 @@
             items.innerHTML = '';
             results.items.forEach(function(item) {
                 item.unit = units[item.unit] || item.unit;
+                item.units = item.units.map(function(unit) {
+                    return units[unit] || unit;
+                });
             });
             items.clone(results.items);
 
@@ -92,16 +95,31 @@
                 setTimeout(function() {
                     items.innerHTML = '';
                     items.clone(_.items);
+                    items.query('.food').each(function(item, i) {
+                        var values = _.items[i],
+                            unit = item.query('[name=unit]');
+                        Clone.init(unit);
+                        unit.clone(values.units);
+                        unit.value = values.unit.id;
+                    });
                     store('list', _.items);
                 }, 100);
             }
-            HTML.query('#api').values({url:'n/a',method:'n/a'});
+            HTML.query('.api').values({url:'n/a',method:'n/a'});
             store('json', _.analysisBody());
         },
         add: function() {
-            var values = this.parentNode.cloneValues;
-            _.items.push(values);
+            _.items.push(this.cloneValues);
             Eventi.fire.location('#list');
+        },
+        update: function(e) {
+            var index = this.getAttribute('index'),
+                values = _.items[index],
+                name = e.target.getAttribute('name'),
+                value = e.target.value;
+            Eventi.on('^foodunits', function(e, units) {
+                values[name] = name === 'unit' ? units[value] : value;
+            });
         },
         remove: function() {
             var index = this.parentNode.getAttribute('index');
@@ -192,7 +210,7 @@
             opts.url = url;
             opts.data = data;
 
-            HTML.query('#api').values({
+            HTML.query('.api').values({
                 url: opts.url.replace(_.base, ''),
                 method: opts.method
             });
@@ -225,7 +243,8 @@
     Eventi.on('items:analysis', _.analyze);
     Eventi.on('page', _.page);
     Eventi.on('options', _.options);
+    Eventi.on('change', '.food', _.update);
     _.preprocess('nutrients');
     _.preprocess('foodunits');
 
-})(window.Eventi, document.documentElement, jQuery.ajax, window.store);
+})(window.Eventi, document.documentElement, jQuery.ajax, window.store, window.Clone);

@@ -12,15 +12,14 @@ body {
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing,
-.footer {
-    padding-left: 15px;
-    padding-right: 15px;
+.container > div {
+    margin-left: 15px;
+    margin-right: 15px;
 }
 
 /* Custom page header */
-.header {
+.header .row {
+    margin-bottom: 5px;
     border-bottom: 1px solid #e5e5e5;
 }
 
@@ -32,11 +31,9 @@ body {
     padding-bottom: 19px;
 }
 
-#api {
-    margin-top: -30px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 15px;
+.api {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .none {
@@ -54,7 +51,7 @@ body {
 label {
     margin-left: 3px;
 }
-[click] {
+a[click] {
     cursor: pointer;
 }
 
@@ -96,16 +93,15 @@ label {
     }
 
     /* Remove the padding we set earlier */
-    .header,
-    .marketing,
-    .footer {
+    .container > div {
         padding-left: 0;
         padding-right: 0;
     }
 
     /* Space out the masthead */
-    .header {
-        margin-bottom: 30px;
+    .header .row {
+        padding-bottom: 5px;
+        margin-bottom: 10px;
     }
     
     /* Remove the bottom border on the jumbotron for visual effect */
