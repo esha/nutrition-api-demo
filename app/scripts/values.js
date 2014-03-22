@@ -143,23 +143,28 @@
             return name;
         },
         setAll: function(el, vals) {
-            var set = _.endpoints(el);
-            for (var i=0; i<set.length; i++) {
-                var end = set[i],
-                    name = _.fullName(end, el),
-                    val = _.resolve(name, vals);
-                if (val !== undefined) {
-                    _.set(end, val, name);
-                } else if (end === el) {
-                    for (name in vals) {
-                        val = vals[name];
-                        _.set(el, val, name);
+            var sets = _.endpoints(el).map(function(end) {
+                var name = _.fullName(end, el);
+                return [end, _.resolve(name, vals), name];
+            }).filter(function(set) {
+                return set[1] !== undefined;
+            });
+            if (!sets.length) {
+                var text = el.outerHTML,
+                    re = /{{(\w+(\.\w+|\[\d+])*)}}/g,
+                    match;
+                while ((match = re.exec(text))) {
+                    var name = match[1],
+                        val = _.resolve(name, vals);
+                    if (val !== undefined) {
+                        sets.push([el, val, name]);
                     }
-                } else {
-                    set.splice(i--, 1);
                 }
             }
-            return set;
+            sets.forEach(function(set) {
+                _.set.apply(_, set);
+            });
+            return el;
         },
         setByName: function(el, name, vals) {
             var els = el.querySelectorAll(_.selector(name)),
@@ -212,20 +217,21 @@
                 }
             },
             'default': function(val, name) {
-                var re = name && new RegExp('{{'+name+'}}','g'),
-                    onlyAttr = false;
-                for (var i=0,m=this.attributes.length; i<m; i++) {
-                    var attr = this.attributes[i];
-                    if (re && re.test(attr.value)) {
-                        attr.value = attr.value.replace(re, val);
-                    } else if (attr.name === name || attr.name === 'data-'+name) {
-                        attr.value = val;
-                        onlyAttr = true;
+                var re = new RegExp('{{'+name+'}}', 'g');
+                if (re.test(this.innerHTML)) {
+                    this.innerHTML = this.innerHTML.replace(re, val);
+                } else {
+                    var done = false;
+                    for (var i=0,m=this.attributes.length; i<m; i++) {
+                        var attr = this.attributes[i];
+                        if (re.test(attr.value)) {
+                            attr.value = attr.value.replace(re, val);
+                            done = true;
+                        }
                     }
-                }
-                if (!onlyAttr) {
-                    var text = this.innerHTML;
-                    this.innerHTML = re && re.test(text) ? text.replace(re, val) : val;
+                    if (!done) {
+                        this.innerHTML = val;
+                    }
                 }
             }
         },
