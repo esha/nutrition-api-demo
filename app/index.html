@@ -49,7 +49,7 @@
                 </div>
                 <div class="api hide-start hide-list row">
                     <span class="col-xs-8 col-sm-9">
-                        <span name="method">--</span>: <span name="url" class="small">--</span>
+                        <span name="method">{{type}}</span>: <span name="url" class="small">{{url}}</span>
                     </span>
                     <span class="col-xs-4 col-sm-3 hide-json">
                         <button click="app.json" title="View JSON Response">View JSON</button>
@@ -132,7 +132,7 @@
                         </span>
                     </div>
                 </div>
-                <div id="limited" class="small error">
+                <div id="limited" class="small text-danger">
                     For demo purposes, display is restricted to Calories.
                 </div>
                 <hr/>
@@ -173,7 +173,7 @@
             <div class="view-json">
                 <pre name="json">{
   "json": "goes here",
-  "after": "you make a call"
+  "after": "you do something"
 }</pre>
             </div>
             <div class="footer">

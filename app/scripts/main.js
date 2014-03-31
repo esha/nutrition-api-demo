@@ -105,7 +105,7 @@
                     store('list', _.items);
                 }, 100);
             }
-            HTML.query('.api').values({url:'n/a',method:'n/a'});
+            HTML.query('.api').values({ method:'POST (request body)', url:'/analysis'});
             store('json', _.analysisBody());
         },
         add: function() {
@@ -156,6 +156,7 @@
                     });
                     Eventi.on('^nutrients', function(e, nutrients) {
                         response.results.forEach(function(result) {
+                            result.value = Math.round(result.value * 10) / 10;
                             result.nutrient = nutrients[result.nutrient] || result.nutrient;
                         });
                         store('analysis', response);
