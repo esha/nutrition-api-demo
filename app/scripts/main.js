@@ -231,20 +231,22 @@
         }
     };
 
-    Eventi.types('search','clear','location');
-    Eventi.on.location(/#(nutrients|foodunits)/, _.resource);
-    Eventi.on.location('#json', _.json);
-    Eventi.on.location('#query={query}', _.search);
-    Eventi.on.location('#list', _.list);
-    Eventi.on.location('#analysis', _.analysis);
-    Eventi.on.search(_.search);
-    Eventi.on('items:add', '.food', _.add);
-    Eventi.on('items:remove', '.food', _.remove);
-    Eventi.on('items:clear', _.clear);
-    Eventi.on('items:analysis', _.analyze);
-    Eventi.on('page', _.page);
-    Eventi.on('options', _.options);
-    Eventi.on('change', '.food', _.update);
+    Eventi.alias('location');
+    Eventi.on(window, {
+        'location@`#(nutrients|foodunits)`': _.resource,
+        'location@#json': _.json,
+        'location@#query={query}': _.search,
+        'location@list': _.list,
+        'location@#analysis': _.analysis,
+        'search': _.search,
+        'items:add<.food>': _.add,
+        'items:remove<.food>': _.remove,
+        'items:clear': _.clear,
+        'items:analysis': _.analyze,
+        'page': _.page,
+        'options': _.options,
+        'change<.food>': _.update
+    });
     _.preprocess('nutrients');
     _.preprocess('foodunits');
 

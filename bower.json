@@ -4,10 +4,10 @@
   "private": true,
   "dependencies": {
     "bootstrap": "~3.0.3",
-    "HTML": "~0.11.0",
+    "HTML": "^0.11.0",
     "API": "nbubna/API",
     "store2": "~2.1.4",
-    "eventi": "^0.7.1",
+    "eventi": "^1.0.1",
     "jquery": "~1.10.2"
   },
   "devDependencies": {}
