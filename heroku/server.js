@@ -5,13 +5,20 @@ var logfmt = require("logfmt");
 var request = require('request')
 var app = express();
 var api = 'http://api.esha.com';
-var key = '2s35wsxke74rcut8jqapbkyf';
+var key = process.env.APIKEY;
 
 function toApi(url) {
     url = url.replace('/api', api);
     url += url.indexOf('?') > 0 ? '&' : '?';
     url += 'apikey='+key;
     return url;
+}
+
+if (!key) {
+    console.error('You must define a valid APIKEY environment variable.');
+    process.exit(1);
+} else {
+    console.log('Using APIKEY:', key);
 }
 
 app.use(logfmt.requestLogger());
