@@ -1,8 +1,8 @@
 'use strict';
 
-var express = require("express");
-var logfmt = require("logfmt");
-var request = require('request')
+var express = require('express');
+var logfmt = require('logfmt');
+var request = require('request');
 var app = express();
 var api = 'http://api.esha.com';
 var key = process.env.APIKEY;
@@ -24,7 +24,7 @@ if (!key) {
 app.use(logfmt.requestLogger());
 
 app.get('/api/*', function(req, res) {
-   request(toApi(req.originalUrl)).pipe(res);
+    request(toApi(req.originalUrl)).pipe(res);
 });
 app.post('/api/analysis', function(req, res) {
     req.pipe(request.post(toApi(req.originalUrl))).pipe(res);
