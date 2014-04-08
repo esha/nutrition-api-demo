@@ -9,13 +9,17 @@
     "type": "git",
     "url": "git://github.com/esha/wsdemo.git"
   },
-"dependencies": {
+  "dependencies": {
     "logfmt": "~1.0.0-pre3",
     "express": "~3.4.8",
     "request": "~2.34.0"
   },
+  "scripts": {
+    "test": "grunt"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
+    "grunt-cli": "^0.1",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-uglify": "~0.2.0",
