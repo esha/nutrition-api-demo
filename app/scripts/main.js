@@ -193,7 +193,7 @@
             });
         },
         resourceLoaded: function(path, response) {
-            var container = HTML.query('.view-'+path.substring(1)+' [clone]').only(0);
+            var container = HTML.query('.show-'+path.substring(1)+' [clone]').only(0);
             container.innerHTML = '';
             container.clone(response);
         },

@@ -8,7 +8,8 @@
     "API": "nbubna/API",
     "store2": "~2.1.4",
     "eventi": "^1.0.1",
-    "jquery": "~1.10.2"
+    "jquery": "~1.10.2",
+    "vista": "~0.1.1"
   },
   "devDependencies": {}
 }
