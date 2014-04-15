@@ -57,12 +57,12 @@
         },
         clone: function(target, source, insert, values) {
             var clone = (source.cloneSource || source).cloneNode(true),
-                root = clone.classList ? clone : clone.children[0];
+                root = clone.classList ? clone : (clone.children||clone.childNodes)[0];
             if (root) {
                 root.classList.add('cloned');
             }
             if (values) {
-                _.values(clone, values, root);
+                _.values(root, values);
             }
             insert.call(target, clone);
             if (window.CustomEvent) {
@@ -79,18 +79,18 @@
             first: function(dom){ this.insertBefore(dom, this.childNodes[0]); },
             last: function(dom){ this.appendChild(dom); }
         },
-        values: function(el, values, root) {
+        values: function(el, values, child) {
             if (typeof values === 'function') {
                 values.call(el, el);
             } else if (typeof el.values === 'function') {
                 el.values(values);
             } else if (el.children.length) {
                 for (var i=0,m=el.children.length; i<m; i++) {
-                    _.values(el.children[i], values);
+                    _.values(el.children[i], values, true);
                 }
             }
-            if (root) {
-                Object.defineProperty(root, 'cloneValues', {value:values});
+            if (!child) {
+                Object.defineProperty(el, 'cloneValues', {value:values});
             }
         },
         index: function(el) {
