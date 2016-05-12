@@ -29,7 +29,7 @@ module.exports = function (grunt) {
         watch: {
             js: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-                tasks: ['jshint'],
+                tasks: ['jshint','useminPrepare','concat','copy:dist','usemin'],
                 options: {
                     livereload: true
                 }
@@ -39,11 +39,20 @@ module.exports = function (grunt) {
                 tasks: ['test:watch']
             },
             gruntfile: {
-                files: ['Gruntfile.js']
+                files: ['Gruntfile.js'],
+                tasks: ['jshint']
+            },
+            images: {
+                files: ['<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,svg,webp}'],
+                tasks: ['imagemin','svgmin','copy:dist']
             },
             styles: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-                tasks: ['newer:copy:styles', 'autoprefixer']
+                tasks: ['useminPrepare','newer:copy:styles','autoprefixer','concat','copy:dist','usemin']
+            },
+            html: {
+                files: ['<%= yeoman.app %>/{,*/}*.html'],
+                tasks: ['useminPrepare','copy:dist','usemin']
             },
             livereload: {
                 options: {
