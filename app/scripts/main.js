@@ -1,13 +1,55 @@
-(function(Eventi, HTML, ajax, store, Clone) {
+(function(Eventi, HTML, ajax, store, Clone, Posterior) {
     'use strict';
 
     var _ = window.app = {
+        api: new Posterior({
+            url: '/api',
+            debug: true,
+
+            '@food': {
+                url: '/food/{0}',
+                cache: true
+            },
+            '@foodunits': {
+                url: '/food-units',
+                saveResult: true,
+                auto: true,
+                then: function(list) {
+                    return _.toIdHash(list, 'foodunits');
+                }
+            },
+            '@nutrients': {
+                url: '/nutrients',
+                saveResult: true,
+                auto: true,
+                then: function(list) {
+                    return _.toIdHash(list, 'nutrients');
+                }
+            },
+            '@search': {
+                url: '/foods?query={query}&count={count}&start={start}&spell={spell}',
+                requires: ['app.api.foodunits']
+            },
+            '@analysis': {
+                method: 'POST',
+                url: '/analysis',
+                requires: ['app.api.nutrients', 'app.api.foodunits']
+            }
+        }),
+        toIdHash: function(list, saveAs) {
+            var hash = {};
+            list.forEach(function(member) {
+                hash[member.id] = member;
+            });
+            if (saveAs) {
+                _[saveAs] = hash;
+            }
+            return hash;
+        },
         base: '/api',
         paths: {
             nutrients: '/nutrients',
-            foodunits: '/food-units',
-            analysis: '/analysis',
-            search: '/foods'
+            analysis: '/analysis'
         },
         path: function(path) {
             return _.base + (_.paths[path] || path);
@@ -38,11 +80,9 @@
             _.query('search', params);
         },
         query: function(name, params) {
-            Eventi.on('^foodunits', function(e, units) {
-                _.ajax(name, params).then(function(results) {
-                    _.results(results, units);
-                    _.controls(results);
-                });
+            _.api.search(params).then(function(results) {
+                _.results(results, _.foodunits);
+                _.controls(results);
             });
         },
         controls: function(results) {
@@ -112,14 +152,18 @@
             _.items.push(this.cloneValues);
             Eventi.fire.location('#list');
         },
+        view: function() {
+            var id = this.cloneValues.id;
+            console.log(this.cloneValues);
+            Eventi.fire.location('#food/'+id);
+            _.api.food(id);
+        },
         update: function(e) {
             var index = this.getAttribute('index'),
                 values = _.items[index],
                 name = e.target.getAttribute('name'),
                 value = e.target.value;
-            Eventi.on('^foodunits', function(e, units) {
-                values[name] = name === 'unit' ? units[value] : value;
-            });
+            values[name] = name === 'unit' ? _.foodunits[value] : value;
         },
         remove: function() {
             var index = this.parentNode.getAttribute('index');
@@ -240,6 +284,7 @@
         'location@#analysis': _.analysis,
         'search': _.search,
         'items:add<.food>': _.add,
+        'items:view<.food>': _.view,
         'items:remove<.food>': _.remove,
         'items:clear': _.clear,
         'items:analysis': _.analyze,
@@ -250,4 +295,4 @@
     _.preprocess('nutrients');
     _.preprocess('foodunits');
 
-})(window.Eventi, document.documentElement, jQuery.ajax, window.store, window.Clone);
+})(window.Eventi, document.documentElement, jQuery.ajax, window.store, window.Clone, window.Posterior);
