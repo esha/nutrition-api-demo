@@ -6,8 +6,10 @@ git clone git@github.com:esha/wsdemo.git
 cd wsdemo
 npm install
 grunt
-foreman start -d dist
+foreman start -d dist -p 8000
 ```
+
+Then direct your browser to ```http://127.0.0.1:8000/```
 
 To change the project, edit the html/css/js files in /app.
 Whenever you make a change, rebuild and restart by doing:
