@@ -1,10 +1,25 @@
-(function(Eventi, HTML, ajax, store, Clone, Posterior) {
+(function(Eventi, HTML, store, Clone, Posterior) {
     'use strict';
 
     var _ = window.app = {
         api: new Posterior({
             url: '/api',
             debug: true,
+            configure: function updateApiDisplay(cfg) {
+                var consume = cfg.consumeData;
+                cfg.consumeData = false;
+                var url = Posterior.api.resolve(cfg.url, cfg, cfg.data);
+                cfg.consumeData = consume;
+
+                HTML.query('.api').values({
+                    url: url.replace(_.base, ''),
+                    method: cfg.method
+                });
+            },
+            then: function(response) {
+                store('json', response);
+                return response;
+            },
 
             '@food': {
                 url: '/food/{0}',
@@ -13,30 +28,29 @@
             '@foodunits': {
                 url: '/food-units',
                 saveResult: true,
-                auto: true,
                 then: function(list) {
-                    return _.toIdHash(list, 'foodunits');
+                    return _.asResource(list, 'foodunits');
                 }
             },
             '@nutrients': {
                 url: '/nutrients',
                 saveResult: true,
-                auto: true,
                 then: function(list) {
-                    return _.toIdHash(list, 'nutrients');
+                    return _.asResource(list, 'nutrients');
                 }
             },
             '@search': {
-                url: '/foods?query={query}&count={count}&start={start}&spell={spell}',
-                requires: ['app.api.foodunits']
+                requires: ['app.api.foodunits'],
+                url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
-            '@analysis': {
+            '@analyze': {
+                requires: ['app.api.nutrients', 'app.api.foodunits'],
                 method: 'POST',
-                url: '/analysis',
-                requires: ['app.api.nutrients', 'app.api.foodunits']
+                url: '/analysis'
             }
         }),
-        toIdHash: function(list, saveAs) {
+
+        asResource: function(list, saveAs) {
             var hash = {};
             list.forEach(function(member) {
                 hash[member.id] = member;
@@ -46,18 +60,7 @@
             }
             return hash;
         },
-        base: '/api',
-        paths: {
-            nutrients: '/nutrients',
-            analysis: '/analysis'
-        },
-        path: function(path) {
-            return _.base + (_.paths[path] || path);
-        },
-        param: function(url, key, val) {
-            return !val && val !== 0 && val !== false ? url :
-                url + (url.indexOf('?')>0 ? '&':'?') + key + '=' + val;
-        },
+
         search: function(e, path, query) {
             var options = HTML.query('#options',1),
                 params = options.classList.contains('hidden') ? {} : options.values(),
@@ -187,26 +190,18 @@
             return body;
         },
         analyze: function() {
-            _.ajax('analysis', JSON.stringify(_.analysisBody()), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).done(function(response) {
-                store('json', response);
-                Eventi.on('^foodunits', function(e, units) {
-                    response.items.forEach(function(item) {
-                        item.unit = units[item.unit] || item.unit;
-                    });
-                    Eventi.on('^nutrients', function(e, nutrients) {
-                        response.results.forEach(function(result) {
-                            result.value = Math.round(result.value * 10) / 10;
-                            result.nutrient = nutrients[result.nutrient] || result.nutrient;
-                        });
-                        store('analysis', response);
-                        Eventi.fire.location('#analysis');
-                    });
+            var foodlist = _.analysisBody();
+            console.log(foodlist);
+            _.api.analyze(foodlist).then(function(response) {
+                response.items.forEach(function(item) {
+                    item.unit = _.foodunits[item.unit] || item.unit;
                 });
+                response.results.forEach(function(result) {
+                    result.value = Math.round(result.value * 10) / 10;
+                    result.nutrient = _.nutrients[result.nutrient] || result.nutrient;
+                });
+                store('analysis', response);
+                Eventi.fire.location('#analysis');
             });
         },
         analysis: function() {
@@ -232,46 +227,14 @@
             }
         },
         resource: function(e, path, name) {
-            _.ajax(name).then(function(response) {
+            _.api[name].then(function(response) {
                 _.resourceLoaded(path, response);
             });
         },
         resourceLoaded: function(path, response) {
-            var container = HTML.query('.show-'+path.substring(1)+' [clone]').only(0);
+            var container = HTML.query('[vista="'+path.substring(1)+'"] [clone]').only(0);
             container.innerHTML = '';
             container.clone(response);
-        },
-        ajax: function(path, data, opts) {
-            var url = _.path(path);
-            if (data && !(opts && opts.method === 'POST')) {
-                for (var key in data) {
-                    url = _.param(url, key, data[key]);
-                }
-                data = null;
-            }
-            if (!opts) {
-                opts = { method: 'GET' };
-            }
-            opts.url = url;
-            opts.data = data;
-
-            HTML.query('.api').values({
-                url: opts.url.replace(_.base, ''),
-                method: opts.method
-            });
-            return ajax(opts).then(function(response) {
-                store('json', response);
-                return response;
-            });
-        },
-        preprocess: function(resource) {
-            ajax(_.path(resource)).done(function(list) {
-                var hash = {};
-                list.forEach(function(member) {
-                    hash[member.id] = member;
-                });
-                Eventi.fire('^'+resource, hash);
-            });
         }
     };
 
@@ -292,7 +255,5 @@
         'options': _.options,
         'change<.food>': _.update
     });
-    _.preprocess('nutrients');
-    _.preprocess('foodunits');
 
-})(window.Eventi, document.documentElement, jQuery.ajax, window.store, window.Clone, window.Posterior);
+})(window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior);
