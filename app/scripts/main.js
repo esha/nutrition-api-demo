@@ -13,7 +13,7 @@
 
                 HTML.query('.api').values({
                     url: url.replace(_.base, ''),
-                    method: cfg.method
+                    method: cfg.method || 'GET'
                 });
             },
             then: function(response) {
@@ -21,21 +21,17 @@
                 return response;
             },
 
-            '@food': {
-                url: '/food/{0}',
-                cache: true
-            },
             '@foodunits': {
                 url: '/food-units',
                 saveResult: true,
-                then: function(list) {
+                responseData: function(list) {
                     return _.asResource(list, 'foodunits');
                 }
             },
             '@nutrients': {
                 url: '/nutrients',
                 saveResult: true,
-                then: function(list) {
+                responseData: function(list) {
                     return _.asResource(list, 'nutrients');
                 }
             },
@@ -62,6 +58,7 @@
             if (saveAs) {
                 _[saveAs] = hash;
             }
+            hash.__list__ = list;
             return hash;
         },
 
@@ -238,7 +235,8 @@
         resourceLoaded: function(path, response) {
             var container = HTML.query('[vista="'+path.substring(1)+'"] [clone]').only(0);
             container.innerHTML = '';
-            container.clone(response);
+            container.clone(response.__list__);
+            store('json', response.__list__);
         }
     };
 
