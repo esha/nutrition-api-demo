@@ -43,6 +43,10 @@
                 requires: ['app.api.foodunits'],
                 url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
+            '@view': {
+                url: '/food/{0}',
+                cache: true
+            },
             '@analyze': {
                 requires: ['app.api.nutrients', 'app.api.foodunits'],
                 method: 'POST',
@@ -158,8 +162,8 @@
         view: function() {
             var id = this.cloneValues.id;
             console.log(this.cloneValues);
-            Eventi.fire.location('#food/'+id);
-            _.api.food(id);
+            Eventi.fire.location('#view/'+id);
+            _.api.view(id);
         },
         update: function(e) {
             var index = this.getAttribute('index'),
@@ -227,7 +231,7 @@
             }
         },
         resource: function(e, path, name) {
-            _.api[name].then(function(response) {
+            _.api[name]().then(function(response) {
                 _.resourceLoaded(path, response);
             });
         },
