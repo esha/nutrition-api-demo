@@ -110,7 +110,7 @@
         },
         results: function(results, units) {
             var all = HTML.query('#results'),
-                items = all.query('[clone]').only(0);
+                items = all.query('[clone]');
             items.innerHTML = '';
             results.items.forEach(function(item) {
                 item.unit = units[item.unit] || item.unit;
@@ -134,12 +134,12 @@
         items: store('list')||[],
         list: function() {
             var all = HTML.query('#list'),
-                items = all.query('[clone]').only(0);
+                items = all.query('[clone]');
             if (items.children.length !== _.items.length) {
                 setTimeout(function() {
                     items.innerHTML = '';
                     items.clone(_.items);
-                    items.query('.food').each(function(item, i) {
+                    items.queryAll('.food').each(function(item, i) {
                         var values = _.items[i],
                             unit = item.query('[name=unit]');
                         Clone.init(unit);
@@ -233,7 +233,7 @@
             });
         },
         resourceLoaded: function(path, response) {
-            var container = HTML.query('[vista="'+path.substring(1)+'"] [clone]').only(0);
+            var container = HTML.query('[vista="'+path.substring(1)+'"] [clone]');
             container.innerHTML = '';
             container.clone(response.__list__);
             store('json', response.__list__);
