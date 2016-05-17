@@ -230,7 +230,7 @@
             values[name] = name === 'unit' ? _.foodunits[value] : value;
         },
         remove: function() {
-            var index = this.parentNode.getAttribute('index');
+            var index = this.nearest('[index]').getAttribute('index');
             _.items.splice(index, 1);
             _.list();
         },
