@@ -47,7 +47,7 @@
                         </select>
                     </div>
                 </div>
-                <div vista="!start !list" class="api row">
+                <div vista="!start !list !inline" class="api row">
                     <span class="col-xs-8 col-sm-9">
                         <span name="method">{{type}}</span>: <span name="url" class="small">{{url}}</span>
                     </span>
@@ -114,11 +114,55 @@
                     <button click="items:analysis">Analyze</button>
                     <button click="items:clear">Clear</button>
                     <button click="app.json">View JSON</button>
+                    <button click="location@#inline">Add Inline Food</button>
                 </div>
                 <div clone="#food"></div>
                 <div class="none">
-                    Please do a search to add items.
+                    Please do a search to add items or add an inline food.
                 </div>
+            </div>
+
+            <div id="inline" class="food" vista="inline">
+                <h4>Add An Inline Food</h4>
+                <div class="row">
+                    <span class="col-xs-6 col-sm-3">
+                        <label for="input">Description:</label>
+                    </span>
+                    <span class="col-xs-6 col-sm-2">
+                        <input name="input" placeholder="Grandma's muffins">
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="col-xs-6 col-sm-3">
+                        <label for="quantity">Quantity:</label>
+                    </span>
+                    <span class="col-xs-3 col-sm-2">
+                        <input name="quantity" type="number">
+                    </span>
+                </div>
+                <div class="row">
+                    <span class="col-xs-6 col-sm-3">
+                        <label for="unit">Unit:</label>
+                    </span>
+                    <span class="col-xs-3 col-sm-2">
+                        <select name="unit" clone>
+                            <option value="{{id}}">{{description}}</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="row" name="nutrient_data">
+                    <span class="col-xs-9 col-sm-3">
+                        <label for="calories">Calories:</label>
+                    </span>
+                    <span class="col-xs-3 col-sm-2">
+                        <input type="hidden" name="nutrient" value="urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9">
+                        <nobr><input type="number" name="value" placeholder="137">&nbsp;kcal</nobr>
+                    </span>
+                </div>
+                <div id="limited" class="small text-danger">
+                    For demo purposes, only Calories are relevant.
+                </div>
+                <button click="items:inline">Add To List</button>
             </div>
 
             <div id="view" vista="view">

@@ -158,6 +158,38 @@
             _.items.push(this.cloneValues);
             Eventi.fire.location('#list');
         },
+        prepInline: function() {
+            var inline = HTML.query('#inline'),
+                units = inline.query('select[name=unit]');
+            _.api.foodunits().then(function() {
+                units.clone(_.foodunits.__list__);
+                inline.values({
+                    quantity: 1,
+                    calories: '',
+                    input: ''
+                });
+                units.value = 'urn:uuid:85562e85-ba37-4e4a-8400-da43170204a7';//Each
+            });
+        },
+        inline: function() {
+            var inline = HTML.query('#inline'),
+                input = inline.values('input'),
+                unit = _.foodunits[inline.query('[name=unit]').value],
+                food = {
+                    id: 'http://www.example.com/'+input.replace(/ /g,''),
+                    description: input,
+                    quantity: inline.values('quantity'),
+                    unit: unit,
+                    nutrient_data: [{
+                        nutrient: inline.values('nutrient'),
+                        value: inline.values('value')
+                    }],
+                    product: '-inline-',
+                    units: [unit]
+                };
+            _.items.push(food);
+            Eventi.fire.location('#list');
+        },
         view: function(e, path, id) {
             if (id) {
                 _.api.view(id).then(function viewFood(food) {
@@ -210,11 +242,15 @@
         analysisBody: function() {
             var body = { items: [] };
             _.items.forEach(function(item) {
-                body.items.push({
+                var food = {
                     id: item.id,
                     quantity: item.quantity,
                     unit: item.unit.id
-                });
+                };
+                if (item.nutrient_data) {
+                    food.nutrient_data = item.nutrient_data;
+                }
+                body.items.push(food);
             });
             return body;
         },
@@ -272,8 +308,10 @@
         'location@list': _.list,
         'location@#analysis': _.analysis,
         'location@#view/{uri}': _.view,
+        'location@#inline': _.prepInline,
         'search': _.search,
         'items:add<.food>': _.add,
+        'items:inline<.food>': _.inline,
         'items:view<.food>': _.view,
         'items:remove<.food>': _.remove,
         'items:clear': _.clear,
