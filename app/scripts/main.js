@@ -40,8 +40,15 @@
                 url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
             '@view': {
+                requires: ['app.api.foodunits', 'app.api.nutrients'],
                 url: '/food/{0}',
-                cache: true
+                then: function(food) {
+                    food.nutrient_data = food.nutrient_data.filter(function(datum) {
+                        // limit demo to calories
+                        return datum.nutrient === 'urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9';
+                    });
+                    store('json', food);
+                }
             },
             '@analyze': {
                 requires: ['app.api.nutrients', 'app.api.foodunits'],
@@ -85,7 +92,7 @@
         },
         query: function(name, params) {
             _.api.search(params).then(function(results) {
-                _.results(results, _.foodunits);
+                _.results(results);
                 _.controls(results);
             });
         },
@@ -108,16 +115,11 @@
         options: function() {
             HTML.query('#options').classList.toggle('hidden');
         },
-        results: function(results, units) {
+        results: function(results) {
             var all = HTML.query('#results'),
                 items = all.query('[clone]');
             items.innerHTML = '';
-            results.items.forEach(function(item) {
-                item.unit = units[item.unit] || item.unit;
-                item.units = item.units.map(function(unit) {
-                    return units[unit] || unit;
-                });
-            });
+            results.items.forEach(_.processFoodUnits);
             items.clone(results.items);
 
             var feedback = all.query('#feedback'),
@@ -156,11 +158,37 @@
             _.items.push(this.cloneValues);
             Eventi.fire.location('#list');
         },
-        view: function() {
-            var id = this.cloneValues.id;
-            console.log(this.cloneValues);
-            Eventi.fire.location('#view/'+id);
-            _.api.view(id);
+        view: function(e, path, id) {
+            if (id) {
+                _.api.view(id).then(function viewFood(food) {
+                    var view = HTML.query('#view'),
+                        values = view.query('[clone].values');
+                    _.processFoodUnits(food);
+                    food.units = food.units.map(function(unit) {
+                        return unit.description;
+                    }).join(', ');
+                    food.tags = food.tags.join(', ');
+                    view.values(food);
+                    values.innerHTML = '';
+                    food.nutrient_data.forEach(_.processNutrientDatum);
+                    values.clone(food.nutrient_data);
+                });
+            } else {
+                id = this.cloneValues.id;
+                Eventi.fire.location('#view/'+id);
+            }
+        },
+        processFoodUnits: function(food) {
+            food.unit = _.foodunits[food.unit] || food.unit;
+            if (food.units) {
+                food.units = food.units.map(function(unit) {
+                    return _.foodunits[unit] || unit;
+                });
+            }
+        },
+        processNutrientDatum: function(datum) {
+            datum.value = Math.round(datum.value * 10) / 10;
+            datum.nutrient = _.nutrients[datum.nutrient] || datum.nutrient;
         },
         update: function(e) {
             var index = this.getAttribute('index'),
@@ -192,15 +220,11 @@
         },
         analyze: function() {
             var foodlist = _.analysisBody();
-            console.log(foodlist);
             _.api.analyze(foodlist).then(function(response) {
                 response.items.forEach(function(item) {
                     item.unit = _.foodunits[item.unit] || item.unit;
                 });
-                response.results.forEach(function(result) {
-                    result.value = Math.round(result.value * 10) / 10;
-                    result.nutrient = _.nutrients[result.nutrient] || result.nutrient;
-                });
+                response.results.forEach(_.processNutrientDatum);
                 store('analysis', response);
                 Eventi.fire.location('#analysis');
             });
@@ -247,6 +271,7 @@
         'location@#query={query}': _.search,
         'location@list': _.list,
         'location@#analysis': _.analysis,
+        'location@#view/{uri}': _.view,
         'search': _.search,
         'items:add<.food>': _.add,
         'items:view<.food>': _.view,

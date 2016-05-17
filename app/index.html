@@ -123,6 +123,41 @@
 
             <div id="view" vista="view">
                 <h4 name="description"></h4>
+                <span class="hidden" name="id"></span>
+                <span class="row">
+                    <label for="quantity">Default Amount:</label>
+                    <span name="quantity"></span>
+                    <span name="unit.description"></span>
+                </span>
+                <span class="row">
+                    <label for="group">Group:</label>
+                    <span name="group"></span>
+                </span>
+                <span class="row">
+                    <label for="product">Product:</label>
+                    <span name="product"></span>
+                </span>
+                <span class="row">
+                    <label for="supplier">Supplier:</label>
+                    <span name="supplier"></span>
+                </span>
+                <span class="row">
+                    <label for="tags">Tags:</label>
+                    <span name="tags"></span>
+                </span>
+                <span class="row">
+                    <label for="units">Available Units:</label>
+                    <span name="units"></span>
+                </span>
+                <span class="row">
+                    <label for="modified">Last Modified:</label>
+                    <span name="modified"></span>
+                </span>
+                <span class="row">
+                    <label for="discontinued">Discontinued:</label>
+                    <span name="discontinued"></span>
+                </span>
+                <label for="values">Nutrition Values:</label>
                 <div class="values" clone insert="last">
                     <div class="row">
                         <span class="col-sm-8" name="nutrient.description"></span>
@@ -131,6 +166,9 @@
                             <span name="nutrient.unit"></span>
                         </span>
                     </div>
+                </div>
+                <div id="limited" class="small text-danger">
+                    For demo purposes, display is restricted to Calories.
                 </div>
             </div>
 
@@ -199,8 +237,6 @@
         <script src="bower_components/jquery/jquery.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <script src="bower_components/domx/dist/domx.full.min.js"></script>
-        <script src="bower_components/domx-values/dist/domx-values.min.js"></script>
-        <script src="bower_components/domx-repeat/dist/domx-repeat.min.js"></script>
         <script src="bower_components/store2/dist/store2.min.js"></script>
         <script src="bower_components/eventi/dist/eventi.js"></script>
         <script src="bower_components/vista/dist/vista.js"></script>

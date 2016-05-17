@@ -54,6 +54,16 @@ label {
 a[click] {
     cursor: pointer;
 }
+#view .row label {
+    margin-left: 1.3em;
+    margin-right: 1em;
+}
+#view span.row {
+    display: block;
+}
+#view .values > .row {
+    margin-left: 0;
+}
 
 /* Custom page footer */
 .footer {
