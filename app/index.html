@@ -6,7 +6,7 @@
         <title>ESHA Nutrition Database API - Demo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta itemprop="vista" define="query list analysis view nutrients foodunits json">
+        <meta itemprop="vista" define="query list analysis view nutrients foodunits request response">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
@@ -48,11 +48,12 @@
                     </div>
                 </div>
                 <div vista="!start !list !inline" class="api row">
-                    <span class="col-xs-8 col-sm-9">
+                    <span class="col-xs-6 col-sm-6">
                         <span name="method">{{type}}</span>: <span name="url" class="small">{{url}}</span>
                     </span>
-                    <span vista="!json" class="col-xs-4 col-sm-3">
-                        <button click="app.json" title="View JSON Response">View JSON</button>
+                    <span class="col-xs-6 col-sm-6">
+                        <button vista="!response !list" click="location@#response" title="See Response">See Response</button>
+                        <button vista="!request !list" click="location@#request" title="See Request">See Request</button>
                     </span>
                 </div>
             </div>
@@ -110,15 +111,16 @@
             </div>
 
             <div id="list" vista="list">
-                <div id="controls" class="row">
-                    <button click="items:analysis">Analyze</button>
+                <div class="controls row">
+                    <button click="items:analyze">Analyze</button>
                     <button click="items:clear">Clear</button>
-                    <button click="app.json">View JSON</button>
-                    <button click="location@#inline">Add Inline Food</button>
                 </div>
                 <div clone="#food"></div>
                 <div class="none">
                     Please do a search to add items or add an inline food.
+                </div>
+                <div class="controls row">
+                    <button click="location@#inline">Add Inline Food</button>
                 </div>
             </div>
 
@@ -233,7 +235,7 @@
                 <hr/>
                 <h4>List Items:</h4>
                 <div class="items" clone insert="first">
-                    <div class="row">
+                    <div class="food row">
                         <span class="col-sm-4 hidden-xs">
                             <span name="quantity"></span>
                             <span name="unit.description"></span>
@@ -265,12 +267,33 @@
                 </div>
             </div>
 
-            <div vista="json">
-                <pre name="json">{
-  "json": "goes here",
-  "after": "you do something"
-}</pre>
+            <div vista="response request" name="network">
+                <div class="row" vista="response">
+                    <label for="status">Status:</label>&nbsp;
+                    <span name="status"></span>
+                </div>
+                <div class="row">
+                    <label for="headers">Headers:</label>
+                    <pre name="headers"></pre>
+                </div>
+                <div class="row">
+                    <label for="body">Body:</label>
+                    <pre name="body"></pre>
+                </div>
             </div>
+
+            <div vista="error">
+                <h4>There was an error!</h4>
+                <dl name="error">
+                    <dt>Message:</dt>
+                    <dd name="text" class="small text-danger"></dd>
+                    <dt>Field:</dt>
+                    <dd name="field" class="small text-danger"></dd>
+                    <dt>Status Code:</dt>
+                    <dd name="status" class="small text-danger"></dd>
+                </dl>
+            </div>
+
             <div class="footer">
                 <p><a href="http://esha.com"><img src="images/poweredby.jpg"/></a></p>
             </div>

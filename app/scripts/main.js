@@ -5,34 +5,26 @@
         api: new Posterior({
             url: '/api',
             debug: true,
-            configure: function updateApiDisplay(cfg) {
-                var consume = cfg.consumeData;
-                cfg.consumeData = false;
-                var url = Posterior.api.resolve(cfg.url, cfg, cfg.data);
-                cfg.consumeData = consume;
-
-                HTML.query('.api').values({
-                    url: url.replace(_.base, ''),
-                    method: cfg.method || 'GET'
-                });
+            requestData: function(data) {
+                _.saveCommunications('request', data, this);
             },
-            then: function(response) {
-                store('json', response);
-                return response;
+            load: function() {
+                _.saveCommunications('response', this.response, this.cfg);
             },
+            failure: function(e){ _.error(e); },
 
             '@foodunits': {
                 url: '/food-units',
                 saveResult: true,
                 responseData: function(list) {
-                    return _.asResource(list, 'foodunits');
+                    return _.buildResource(list, 'foodunits');
                 }
             },
             '@nutrients': {
                 url: '/nutrients',
                 saveResult: true,
                 responseData: function(list) {
-                    return _.asResource(list, 'nutrients');
+                    return _.buildResource(list, 'nutrients');
                 }
             },
             '@search': {
@@ -47,24 +39,51 @@
                         // limit demo to calories
                         return datum.nutrient === 'urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9';
                     });
-                    store('json', food);
+                    // override actual data to hide all nutrients but calories
+                    var coms = store('response');
+                    coms.data = food;
+                    store('response', coms);
+                    return food;
                 }
             },
             '@analyze': {
                 requires: ['app.api.nutrients', 'app.api.foodunits'],
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/vnd.com.esha.data.Foods+json'
+                },
                 url: '/analysis'
             }
         }),
 
-        asResource: function(list, saveAs) {
+        saveCommunications: function(direction, data, cfg) {
+            var coms = {
+                direction: direction,
+                body: data,
+                method: cfg.method || 'GET',
+                url: Posterior.api
+                        .resolve(cfg.url, cfg.data, null, false)
+                        .replace(_.base, '')
+            };
+            if (direction === 'response') {
+                var xhr = cfg.xhr;
+                coms.headers = xhr.responseHeaders;
+                coms.status = xhr.status;
+            } else {
+                coms.headers = cfg.headers;
+            }
+            store(direction, coms);
+            _.updateAPI();
+        },
+        buildResource: function(list, saveAs) {
             var hash = {};
             list.forEach(function(member) {
                 hash[member.id] = member;
             });
-            if (saveAs) {
-                _[saveAs] = hash;
-            }
+            _[saveAs] = hash;
+            // save network coms too
+            store(saveAs+'.response', store('response'));
+            store(saveAs+'.request', store('request'));
             hash.__list__ = list;
             return hash;
         },
@@ -105,7 +124,8 @@
             });
         },
         page: function(e) {
-            var results = store('json'),
+            var coms = store('response'),
+                results = coms.body,
                 page = e.target.id+'_page',
                 url = results && results[page];
             if (url) {
@@ -151,32 +171,35 @@
                     store('list', _.items);
                 }, 100);
             }
-            HTML.query('.api').values({ method:'POST (request body)', url:'/analysis'});
-            store('json', _.analysisBody());
         },
         add: function() {
             _.items.push(this.cloneValues);
             Eventi.fire.location('#list');
         },
-        prepInline: function() {
+        prepInline: function(vals) {
             var inline = HTML.query('#inline'),
                 units = inline.query('select[name=unit]');
-            _.api.foodunits().then(function() {
-                units.clone(_.foodunits.__list__);
-                inline.values({
+            if (!vals || !vals.quantity) {
+                vals = {
                     quantity: 1,
                     calories: '',
-                    input: ''
-                });
-                units.value = 'urn:uuid:85562e85-ba37-4e4a-8400-da43170204a7';//Each
+                    input: '',
+                    unit: 'urn:uuid:85562e85-ba37-4e4a-8400-da43170204a7'//Each
+                };
+            }
+            _.api.foodunits().then(function() {
+                units.clone(_.foodunits.__list__);
+                inline.values(vals);
+                units.value = vals.unit;
             });
         },
+        inlineBaseUri: 'http://www.example.com/',
         inline: function() {
             var inline = HTML.query('#inline'),
                 input = inline.values('input'),
                 unit = _.foodunits[inline.query('[name=unit]').value],
                 food = {
-                    id: 'http://www.example.com/'+input.replace(/ /g,''),
+                    id: _.inlineBaseUri+input.replace(/ /g,''),
                     description: input,
                     quantity: inline.values('quantity'),
                     unit: unit,
@@ -204,10 +227,14 @@
                     values.innerHTML = '';
                     food.nutrient_data.forEach(_.processNutrientDatum);
                     values.clone(food.nutrient_data);
-                });
+                }).catch(_.error);
             } else {
                 id = this.cloneValues.id;
-                Eventi.fire.location('#view/'+id);
+                if (id.startsWith(_.inlineBaseUri)) {
+                    Eventi.fire.location('#list');
+                } else {
+                    Eventi.fire.location('#view/'+id);
+                }
             }
         },
         processFoodUnits: function(food) {
@@ -237,10 +264,9 @@
         clear: function() {
             _.items = [];
             _.list();
-            store.remove('analysis');
         },
-        analysisBody: function() {
-            var body = { items: [] };
+        analyze: function() {
+            var foodlist = { items: [] };
             _.items.forEach(function(item) {
                 var food = {
                     id: item.id,
@@ -248,74 +274,94 @@
                     unit: item.unit.id
                 };
                 if (item.nutrient_data) {
+                    food.description = item.description;
                     food.nutrient_data = item.nutrient_data;
                 }
-                body.items.push(food);
+                foodlist.items.push(food);
             });
-            return body;
+            _.api.analyze(foodlist).then(_.analysis);
         },
-        analyze: function() {
-            var foodlist = _.analysisBody();
-            _.api.analyze(foodlist).then(function(response) {
-                response.items.forEach(function(item) {
-                    item.unit = _.foodunits[item.unit] || item.unit;
-                });
-                response.results.forEach(_.processNutrientDatum);
-                store('analysis', response);
-                Eventi.fire.location('#analysis');
-            });
-        },
-        analysis: function() {
-            var response = store('analysis');
-            if (!response) {
-                return Eventi.fire.location('#list');
+        analysis: function(response, e) {
+            // if we come here directly, go back the long way.
+            if (response.type === 'location') {
+                return _.analyze();
             }
-            setTimeout(function() {
-                var el = HTML.query('#analysis'),
-                    values = el.query('[clone].values'),
-                    items = el.query('[clone].items');
-                values.innerHTML = '';
-                items.innerHTML = '';
-                values.clone(response.results);
-                items.clone(response.items);
-            }, 100);
+
+            response.items.forEach(function(item) {
+                item.unit = _.foodunits[item.unit] || item.unit;
+            });
+            response.results.forEach(_.processNutrientDatum);
+            var el = HTML.query('#analysis'),
+                values = el.query('[clone].values'),
+                items = el.query('[clone].items');
+            values.innerHTML = '';
+            items.innerHTML = '';
+            values.clone(response.results);
+            items.clone(response.items);
+            if (!e || e.type !== 'location') {
+                Eventi.fire.location('#analysis');
+            }
         },
-        json: function(e) {
-            var json = store('json');
-            HTML.query('pre[name="json"]').innerHTML = json ? JSON.stringify(json, null, 2) : '';
+        network: function(direction, e) {
+            var coms = store(direction);
+            coms.body = JSON.stringify(coms.body, null, 2);
+            if (coms.body.length < 3) {
+                coms.body = '';
+            }
+            coms.headers = JSON.stringify(coms.headers, null, 1)
+                .replace(/",?/g, '')// quotes and commas
+                .substring(2).replace('\n}','\n')// parentheses
+            ;
+            HTML.query('[name="network"]').values(coms);
+            _.updateAPI(coms);
             if (e.type !== 'location') {
-                Eventi.fire.location('#json');
+                Eventi.fire.location('#'+direction);
+            }
+        },
+        updateAPI: function(request) {
+            HTML.query('.api').values(request || store('request'));
+        },
+        error: function(e) {
+            var response = store('response'),
+                messages = response.data.messages,
+                message = messages ? messages[0] : { text: e };
+            message.status = response.status;
+            HTML.query('[name=error]').values(message);
+            if (!e || e.type !== 'location') {
+                Eventi.fire.location('#error');
             }
         },
         resource: function(e, path, name) {
             _.api[name]().then(function(response) {
-                _.resourceLoaded(path, response);
+                var container = HTML.query('[vista="'+name+'"] [clone]');
+                container.innerHTML = '';
+                container.clone(response.__list__);
+                // restore cached network coms
+                store('response', store(name+'.response'));
+                store('request', store(name+'.request'));
+                _.updateAPI();
             });
-        },
-        resourceLoaded: function(path, response) {
-            var container = HTML.query('[vista="'+path.substring(1)+'"] [clone]');
-            container.innerHTML = '';
-            container.clone(response.__list__);
-            store('json', response.__list__);
         }
     };
 
     Eventi.alias('location');
     Eventi.on(window, {
         'location@`#(nutrients|foodunits)`': _.resource,
-        'location@#json': _.json,
+        'location@#request': _.network.bind(_, 'request'),
+        'location@#response': _.network.bind(_, 'response'),
         'location@#query={query}': _.search,
-        'location@list': _.list,
+        'location@#list': _.list,
         'location@#analysis': _.analysis,
         'location@#view/{uri}': _.view,
         'location@#inline': _.prepInline,
+        'location@#error': _.error,
         'search': _.search,
         'items:add<.food>': _.add,
         'items:inline<.food>': _.inline,
         'items:view<.food>': _.view,
         'items:remove<.food>': _.remove,
         'items:clear': _.clear,
-        'items:analysis': _.analyze,
+        'items:analyze': _.analyze,
         'page': _.page,
         'options': _.options,
         'change<.food>': _.update
