@@ -4,7 +4,7 @@
     var _ = window.app = {
         api: new Posterior({
             url: '/api',
-            debug: true,
+            //debug: true,
             requestData: function(data) {
                 _.saveCommunications('request', data, this);
             },
