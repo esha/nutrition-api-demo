@@ -324,8 +324,9 @@
         },
         error: function(e) {
             var response = store('response'),
-                messages = response.data.messages,
-                message = messages ? messages[0] : { text: e };
+                message = response.data && response.data.messages ?
+                    response.data.messages[0] :
+                    { text: e };
             message.status = response.status;
             HTML.query('[name=error]').values(message);
             if (!e || e.type !== 'location') {
