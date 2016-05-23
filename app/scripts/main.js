@@ -265,7 +265,7 @@
             _.items = [];
             _.list();
         },
-        analyze: function() {
+        analyze: function(e) {
             var foodlist = { items: [] };
             _.items.forEach(function(item) {
                 var food = {
@@ -279,14 +279,18 @@
                 }
                 foodlist.items.push(food);
             });
-            _.api.analyze(foodlist).then(_.analysis);
+            _.api.analyze(foodlist).then(function(response) {
+                _.analysis(response);
+                if (e.type !== 'location') {
+                    Eventi.fire.location('#analysis');
+                }
+            });
         },
-        analysis: function(response, e) {
-            // if we come here directly, go back the long way.
+        analysis: function(response) {
+            // location events not welcome
             if (response.type === 'location') {
-                return _.analyze();
+                return _.analyze(response);
             }
-
             response.items.forEach(function(item) {
                 item.unit = _.foodunits[item.unit] || item.unit;
             });
@@ -298,9 +302,6 @@
             items.innerHTML = '';
             values.clone(response.results);
             items.clone(response.items);
-            if (!e || e.type !== 'location') {
-                Eventi.fire.location('#analysis');
-            }
         },
         network: function(direction, e) {
             var coms = store(direction);
