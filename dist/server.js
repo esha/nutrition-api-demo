@@ -7,8 +7,7 @@ var app = express();
 //var api = 'http://api.esha.com';
 var api = 'http://api-staging.esha.com';
 //var api = 'http://localhost:8080';
-//var key = process.env.APIKEY;
-var key = 'admxu7dgta93nf9vq27dkpfw';
+var key = process.env.APIKEY;
 
 function toApi(url) {
     url = url.replace('/api', api);
