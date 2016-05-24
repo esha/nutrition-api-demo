@@ -4,7 +4,8 @@
     var _ = window.app = {
         api: new Posterior({
             url: '/api',
-            //debug: true,
+            debug: true,
+            throttle: { key: 'staging', ms: 510 },// allow ~2 calls/second
             requestData: function(data) {
                 _.saveCommunications('request', data, this);
             },

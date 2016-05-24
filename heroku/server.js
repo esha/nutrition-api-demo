@@ -4,8 +4,8 @@ var express = require('express');
 var logfmt = require('logfmt');
 var request = require('request');
 var app = express();
-var api = 'http://api.esha.com';
-//var api = 'http://api-staging.esha.com';
+//var api = 'http://api.esha.com';
+var api = 'http://api-staging.esha.com';
 //var api = 'http://localhost:8080';
 var key = process.env.APIKEY;
 

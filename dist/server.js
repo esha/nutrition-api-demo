@@ -5,9 +5,10 @@ var logfmt = require('logfmt');
 var request = require('request');
 var app = express();
 //var api = 'http://api.esha.com';
-//var api = 'http://api-staging.esha.com';
-var api = 'http://localhost:8080';
-var key = process.env.APIKEY;
+var api = 'http://api-staging.esha.com';
+//var api = 'http://localhost:8080';
+//var key = process.env.APIKEY;
+var key = 'admxu7dgta93nf9vq27dkpfw';
 
 function toApi(url) {
     url = url.replace('/api', api);
