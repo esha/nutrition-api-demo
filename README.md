@@ -15,7 +15,12 @@ To change the project, edit the html/css/js files in /app.
 Whenever you make a change, rebuild and restart by doing:
 ```grunt && foreman start -d dist```
 
-If you would like to deploy the app to Heroku, you must create your own Heroku app with:  
+To deploy the app to Heroku, follow these instructions.
+Create your own Heroku app with:  
 ```heroku apps:create myappname```
-and then deploy the app with  
+Set your APIKEY:
+```heroku config:set APIKEY=myapikey```
+Deploy the app:  
 ```git subtree push --prefix dist heroku master```
+For later updates, force the subtree push:
+```git push heroku `git subtree split --prefix dist master`:master --force```
