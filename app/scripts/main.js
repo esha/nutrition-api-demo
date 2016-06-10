@@ -177,9 +177,9 @@
             _.items.push(this.cloneValues);
             Eventi.fire.location('#list');
         },
-        prepInline: function(vals) {
-            var inline = HTML.query('#inline'),
-                units = inline.query('select[name=unit]');
+        prepExternal: function(vals) {
+            var external = HTML.query('#external'),
+                units = external.query('select[name=unit]');
             if (!vals || !vals.quantity) {
                 vals = {
                     quantity: 1,
@@ -190,25 +190,25 @@
             }
             _.api.foodunits().then(function() {
                 units.clone(_.foodunits.__list__);
-                inline.values(vals);
+                external.values(vals);
                 units.value = vals.unit;
             });
         },
-        inlineBaseUri: 'http://www.example.com/',
-        inline: function() {
-            var inline = HTML.query('#inline'),
-                input = inline.values('input'),
-                unit = _.foodunits[inline.query('[name=unit]').value],
+        externalBaseUri: 'external_',
+        external: function() {
+            var external = HTML.query('#external'),
+                input = external.values('input'),
+                unit = _.foodunits[external.query('[name=unit]').value],
                 food = {
-                    id: _.inlineBaseUri+input.replace(/ /g,''),
+                    id: _.externalBaseUri+input.replace(/ /g,''),
                     description: input,
-                    quantity: inline.values('quantity'),
+                    quantity: external.values('quantity'),
                     unit: unit,
                     nutrient_data: [{
-                        nutrient: inline.values('nutrient'),
-                        value: inline.values('value')
+                        nutrient: external.values('nutrient'),
+                        value: external.values('value')
                     }],
-                    product: '-inline-',
+                    product: '-external-',
                     units: [unit]
                 };
             _.items.push(food);
@@ -231,7 +231,7 @@
                 }).catch(_.error);
             } else {
                 id = this.cloneValues.id;
-                if (id.startsWith(_.inlineBaseUri)) {
+                if (id.startsWith(_.externalBaseUri)) {
                     Eventi.fire.location('#list');
                 } else {
                     Eventi.fire.location('#view/'+id);
@@ -356,11 +356,11 @@
         'location@#list': _.list,
         'location@#analysis': _.analysis,
         'location@#view/{uri}': _.view,
-        'location@#inline': _.prepInline,
+        'location@#external': _.prepExternal,
         'location@#error': _.error,
         'search': _.search,
         'items:add<.food>': _.add,
-        'items:inline<.food>': _.inline,
+        'items:external<.food>': _.external,
         'items:view<.food>': _.view,
         'items:remove<.food>': _.remove,
         'items:clear': _.clear,

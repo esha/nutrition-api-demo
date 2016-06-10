@@ -47,7 +47,7 @@
                         </select>
                     </div>
                 </div>
-                <div vista="!start !list !inline" class="api row">
+                <div vista="!start !list !external" class="api row">
                     <span class="col-xs-6 col-sm-6">
                         <span name="method">{{type}}</span>: <span name="url" class="small">{{url}}</span>
                     </span>
@@ -117,15 +117,15 @@
                 </div>
                 <div clone="#food"></div>
                 <div class="none">
-                    Please do a search to add items or add an inline food.
+                    Please do a search to add items or add an external food.
                 </div>
                 <div class="controls row">
-                    <button click="location@#inline">Add Inline Food</button>
+                    <button click="location@#external">Add External Food</button>
                 </div>
             </div>
 
-            <div id="inline" class="food" vista="inline">
-                <h4>Add An Inline Food</h4>
+            <div id="external" class="food" vista="external">
+                <h4>Include An External Food</h4>
                 <div class="row">
                     <span class="col-xs-6 col-sm-3">
                         <label for="input">Description:</label>
@@ -164,7 +164,7 @@
                 <div id="limited" class="small text-danger">
                     For demo purposes, only Calories are relevant.
                 </div>
-                <button click="items:inline">Add To List</button>
+                <button click="items:external">Add To List</button>
             </div>
 
             <div id="view" vista="view">
