@@ -197,18 +197,17 @@
         externalBaseUri: 'external_',
         external: function() {
             var external = HTML.query('#external'),
-                input = external.values('input'),
                 unit = _.foodunits[external.query('[name=unit]').value],
                 food = {
-                    id: _.externalBaseUri+input.replace(/ /g,''),
-                    description: input,
+                    id: external.values('id'),
+                    description: external.values('description'),
                     quantity: external.values('quantity'),
                     unit: unit,
                     nutrient_data: [{
                         nutrient: external.values('nutrient'),
                         value: external.values('value')
                     }],
-                    product: '-external-',
+                    product: '-not in ESHA db-',
                     units: [unit]
                 };
             _.items.push(food);

@@ -125,46 +125,57 @@
             </div>
 
             <div id="external" class="food" vista="external">
-                <h4>Include An External Food</h4>
+                <h4>Define External Food</h4>
                 <div class="row">
                     <span class="col-xs-6 col-sm-3">
-                        <label for="input">Description:</label>
+                        <label for="id" required>Id:</label>
                     </span>
                     <span class="col-xs-6 col-sm-2">
-                        <input name="input" placeholder="Grandma's muffins">
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-xs-6 col-sm-3">
-                        <label for="quantity">Quantity:</label>
-                    </span>
-                    <span class="col-xs-3 col-sm-2">
-                        <input name="quantity" type="number">
-                    </span>
-                </div>
-                <div class="row">
-                    <span class="col-xs-6 col-sm-3">
-                        <label for="unit">Unit:</label>
-                    </span>
-                    <span class="col-xs-3 col-sm-2">
-                        <select name="unit" clone>
-                            <option value="{{id}}">{{description}}</option>
-                        </select>
+                        <input name="id" placeholder="non-esha-id" required>
                     </span>
                 </div>
                 <div class="row" name="nutrient_data">
                     <span class="col-xs-9 col-sm-3">
-                        <label for="calories">Calories:</label>
+                        <label for="calories" required>Calories:</label>
                     </span>
                     <span class="col-xs-3 col-sm-2">
                         <input type="hidden" name="nutrient" value="urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9">
-                        <nobr><input type="number" name="value" placeholder="137">&nbsp;kcal</nobr>
+                        <nobr><input type="number" name="value" placeholder="137" required min="1">&nbsp;kcal<sup class="text-danger">*</sup></nobr>
                     </span>
                 </div>
-                <div id="limited" class="small text-danger">
-                    For demo purposes, only Calories are relevant.
+                <div class="row">
+                    <span class="col-xs-6 col-sm-3">
+                        <label for="description" optional>Description:</label>
+                    </span>
+                    <span class="col-xs-6 col-sm-2">
+                        <nobr><input name="description" placeholder="Grandma's muffins" optional><sup>**</sup></nobr>
+                    </span>
                 </div>
-                <button click="items:external">Add To List</button>
+                <div class="row hidden">
+                    <span class="col-xs-6 col-sm-3">
+                        <label for="quantity" optional>Quantity:</label>
+                    </span>
+                    <span class="col-xs-3 col-sm-2">
+                        <input name="quantity" type="number" optional>
+                    </span>
+                </div>
+                <div class="row hidden">
+                    <span class="col-xs-6 col-sm-3">
+                        <label for="unit" optional>Unit:</label>
+                    </span>
+                    <span class="col-xs-3 col-sm-2">
+                        <select name="unit" clone optional>
+                            <option value="{{id}}">{{description}}</option>
+                        </select>
+                    </span>
+                </div>
+                <button click="items:external">Add To My List</button>
+                <div id="limited" class="small">
+                    <sup>*</sup>For demo purposes, only Calories are allowed. In real use, you would want to define all nutrients relevant to your application.
+                </div>
+                <div id="limited" class="small">
+                    <sup>**</sup>Description is only necessary for the demo. It is usually irrelevant for real applications.
+                </div>
             </div>
 
             <div id="view" vista="view">
