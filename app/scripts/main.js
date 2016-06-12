@@ -222,7 +222,7 @@
                     food.units = food.units.map(function(unit) {
                         return unit.description;
                     }).join(', ');
-                    food.tags = food.tags.join(', ');
+                    _.ensureDefined(food, ['group','supplier','product']);
                     view.values(food);
                     values.innerHTML = '';
                     food.nutrient_data.forEach(_.processNutrientDatum);
@@ -236,6 +236,13 @@
                     Eventi.fire.location('#view/'+id);
                 }
             }
+        },
+        ensureDefined: function(obj, keys) {
+            keys.forEach(function(key) {
+                if (!(key in obj)) {
+                    obj[key] = null;
+                }
+            });
         },
         processFoodUnits: function(food) {
             food.unit = _.foodunits[food.unit] || food.unit;
