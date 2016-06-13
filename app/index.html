@@ -6,7 +6,8 @@
         <title>ESHA Nutrition Database API - Demo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta itemprop="vista" define="query list analysis view nutrients foodunits request response">
+        <meta itemprop="vista" define="query list analysis view nutrients foodunits">
+        <meta itemprop="vista" define="request response loading" style="block">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
@@ -21,6 +22,7 @@
         <!--[if lt IE 10]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+        <div vista="loading">Loading...</div>
         <div class="container">
             <div class="header">
                 <h2><a href="http://developer.esha.com">ESHA Nutrition Database API</a></h2>
@@ -275,15 +277,15 @@
             </div>
 
             <div vista="response request" name="network">
-                <div class="row" vista="!request">
+                <div class="row" vista="response">
                     <label for="status">Status:</label>
                     <pre name="status"></pre>
                 </div>
-                <div class="row" vista="!response">
+                <div class="row" vista="request">
                     <label for="url">URL:</label>
                     <pre name="url"></pre>
                 </div>
-                <div class="row" vista="!response">
+                <div class="row" vista="request">
                     <label for="method">Method:</label>
                     <pre name="method"></pre>
                 </div>

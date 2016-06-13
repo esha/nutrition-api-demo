@@ -1,4 +1,4 @@
-(function(Eventi, HTML, store, Clone, Posterior) {
+(function(Eventi, HTML, store, Clone, Posterior, Vista) {
     'use strict';
 
     var _ = window.app = {
@@ -7,10 +7,12 @@
             debug: true,
             throttle: { key: 'staging', ms: 510 },// allow ~2 calls/second
             requestData: function(data) {
+                _.loading(true);
                 _.saveCommunications('request', data, this);
             },
             load: function() {
                 _.saveCommunications('response', this.response, this.cfg);
+                _.loading(false);
             },
             failure: function(e){ _.error(e); },
 
@@ -75,6 +77,11 @@
             }
             store(direction, coms);
             _.updateAPI();
+        },
+        _loading: 0,
+        loading: function(active) {
+            _._loading += active ? 1 : -1;
+            Vista.toggle('loading', _._loading > 0);
         },
         buildResource: function(list, saveAs) {
             var hash = {};
@@ -376,4 +383,4 @@
         'change<.food>': _.update
     });
 
-})(window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior);
+})(window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior, window.Vista);

@@ -17,6 +17,22 @@ body {
     margin-right: 15px;
 }
 
+[vista=loading] {
+    font-size: 2em;
+    font-style: italic;
+    color: #FFF;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #f86924;
+    border: 1px solid;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top: 0;
+    padding: 0 15px;
+}
+
 /* Custom page header */
 .header .row {
     margin-bottom: 5px;
