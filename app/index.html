@@ -275,9 +275,17 @@
             </div>
 
             <div vista="response request" name="network">
-                <div class="row" vista="response">
-                    <label for="status">Status:</label>&nbsp;
-                    <span name="status"></span>
+                <div class="row" vista="!request">
+                    <label for="status">Status:</label>
+                    <pre name="status"></pre>
+                </div>
+                <div class="row" vista="!response">
+                    <label for="url">URL:</label>
+                    <pre name="url"></pre>
+                </div>
+                <div class="row" vista="!response">
+                    <label for="method">Method:</label>
+                    <pre name="method"></pre>
                 </div>
                 <div class="row">
                     <label for="headers">Headers:</label>
