@@ -237,10 +237,10 @@
                 }).catch(_.error);
             } else {
                 id = this.cloneValues.id;
-                if (id.startsWith(_.externalBaseUri)) {
-                    Eventi.fire.location('#list');
-                } else {
+                if (id.startsWith('urn:uuid:')) {
                     Eventi.fire.location('#view/'+id);
+                } else {
+                    Eventi.fire.location('#list');
                 }
             }
         },
