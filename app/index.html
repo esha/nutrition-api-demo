@@ -6,7 +6,7 @@
         <title>ESHA Nutrition Database API - Demo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta itemprop="vista" define="query list analysis view nutrients foodunits">
+        <meta itemprop="vista" define="query list analysis view nutrients foodunits embed">
         <meta itemprop="vista" define="request response loading" style="block">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
@@ -25,7 +25,7 @@
         <div vista="loading">Loading...</div>
         <div class="container">
             <div class="header">
-                <h2><a href="http://developer.esha.com">ESHA Nutrition Database API</a></h2>
+                <h2 vista="!embed"><a href="http://developer.esha.com">ESHA Nutrition Database API</a></h2>
                 <div class="row">
                     <div name="search" class="col-sm-6" click="search">
                         <input type="text" name="query" autofocus>
@@ -33,9 +33,9 @@
                         <a click="options" class="small">Options</a>
                     </div>
                     <ul class="nav nav-pills col-sm-6">
-                        <li><a href="/#list">My List</a></li>
-                        <li><a href="/#nutrients">Nutrients</a></li>
-                        <li><a href="/#foodunits">FoodUnits</a></li>
+                        <li><a href="#list">My List</a></li>
+                        <li><a href="#nutrients">Nutrients</a></li>
+                        <li><a href="#foodunits">FoodUnits</a></li>
                     </ul>
                     <div id="options" class="hidden col-sm-6 small">
                         <label for="count">Count:</label>
@@ -311,7 +311,7 @@
                 </dl>
             </div>
 
-            <div class="footer">
+            <div vista="!embed" class="footer">
                 <p><a href="http://esha.com"><img src="images/poweredby.jpg"/></a></p>
             </div>
         </div>
