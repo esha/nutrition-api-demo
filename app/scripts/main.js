@@ -3,7 +3,7 @@
 
     var _ = window.app = {
         api: new Posterior({
-            url: '/api',
+            url: '/api'+(location.toString().indexOf('staging') > 0 ? '-staging' : ''),
             debug: true,
             throttle: { key: 'staging', ms: 510 },// allow ~2 calls/second
             requestData: function(data) {
