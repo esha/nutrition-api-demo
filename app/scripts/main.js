@@ -16,6 +16,14 @@
             },
             failure: function(e){ _.error(e); },
 
+            '@service' : {
+                url: '/',
+                auto: true,
+                then: function(service) {
+                    HTML.query('[name=implementation_version]').innerHTML = service.implementation_version;
+                    return service;
+                }
+            },
             '@foodunits': {
                 url: '/food-units',
                 saveResult: true,
@@ -96,6 +104,11 @@
             return hash;
         },
 
+        service: function() {
+            _.api.service().then(function() {
+                Eventi.fire.location('#response');
+            });
+        },
         search: function(e, path, query) {
             var options = HTML.query('#options',1),
                 params = options.classList.contains('hidden') ? {} : options.values(),
@@ -362,6 +375,7 @@
 
     Eventi.alias('location');
     Eventi.on(window, {
+        'location@#service': _.service,
         'location@`#(nutrients|foodunits)`': _.resource,
         'location@#request': _.network.bind(_, 'request'),
         'location@#response': _.network.bind(_, 'response'),
