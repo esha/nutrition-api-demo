@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>ESHA Nutrition Database API - Demo</title>
+        <title>ESHA Nutrition API - Demo</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta itemprop="vista" define="query list analysis view nutrients foodunits embed">
+        <meta itemprop="vista" define="query list analysis view nutrients foodunits embed profile recommendations staging">
         <meta itemprop="vista" define="request response loading" style="block">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
@@ -26,7 +26,7 @@
         <div class="container">
             <div class="header">
                 <h2 vista="!embed">
-                    <a href="http://developer.esha.com">ESHA Nutrition Database API</a>
+                    <a href="http://developer.esha.com">ESHA Nutrition API</a>
                     <a href="#service" name="implementation_version"></a>
                 </h2>
                 <div class="row">
@@ -39,6 +39,7 @@
                         <li><a href="#list">My List</a></li>
                         <li><a href="#nutrients">Nutrients</a></li>
                         <li><a href="#foodunits">FoodUnits</a></li>
+                        <li vista="staging"><a href="#profile" title="Recommendations">Recs</a></li>
                     </ul>
                     <div id="options" class="hidden col-sm-6 small">
                         <label for="count">Count:</label>
@@ -275,6 +276,122 @@
                         <span name="description" class="col-xs-9 col-sm-3"></span>
                         <span name="unit" class="col-xs-3 col-sm-2"></span>
                         <span class="col-sm-7 hidden-xs" name="id"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div vista="profile" id="profile">
+                <div class="row">
+                    <label for="sex" class="hidden-xs col-sm-3">Sex (required):</label>
+                    <label class="col-xs-6 col-sm-3">
+                        <input type="radio" name="sex" value="Female" required>&nbsp;Female
+                    </label>
+                    <label class="col-xs-6 col-sm-3"><input type="radio" name="sex" value="Male" required>
+                        &nbsp;Male
+                    </label>
+                </div>
+                <div class="row">
+                    <label for="age" class="hidden-xs col-sm-3">Age:</label>
+                    <span class="col-xs-6 col-sm-3">
+                        <input type="number" name="age" min="1" max="125" step="1" required>
+                        <select name="ageUnit">
+                            <option>Months</option>
+                            <option selected>Years</option>
+                        </select>
+                    </span>
+                </div>
+                <div class="row">
+                    <label for="height" class="hidden-xs col-sm-3">Height:</label>
+                    <input type="number" name="height" min="0" max="108" maxlength="5">
+                    <select name="heightUnit">
+                        <option>Meters</option>
+                        <option>Inches</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label for="weight" class="hidden-xs col-sm-3">Weight:</label>
+                    <input type="number" name="weight" min="1" max="125" step="1">
+                    <select name="weightUnit">
+                        <option>Kilograms</option>
+                        <option>Pounds</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label for="physicalActivityLevelCategory" class="hidden-xs col-sm-3">Activity Level:</label>
+                    <select name="physicalActivityLevelCategory">
+                        <option>Sedentary</option>
+                        <option selected>LowActive</option>
+                        <option>Active</option>
+                        <option>VeryActive</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label for="pregnancyDurationInWeeks" class="hidden-xs col-sm-3">Pregnancy:</label>
+                    <input type="number" name="pregnancyDurationInWeeks" min="0" max="50" step="1"> Weeks
+                </div>
+                <div class="row">
+                    <label for="lactationDurationInMonths" class="hidden-xs col-sm-3">Lactation:</label>
+                    <input type="number" name="lactationDurationInMonths" min="0" max="120" step="1"> Months
+                </div>
+                <div class="row">
+                    <label for="energyInKilocalories" class="hidden-xs col-sm-3">Energy:</label>
+                    <input type="number" name="energyInKilocalories" min="1000" max="10000" step="100"> Kilocalories
+                </div>
+                <div class="row">
+                    <label for="use" class="hidden-xs col-sm-2">System:</label>
+                    <label class="col-xs-4 col-sm-2">
+                        <input type="radio" name="system" value="rdi">&nbsp;RDI
+                    </label>
+                    <label class="col-xs-4 col-sm-2">
+                        <input type="radio" name="system" value="dga">&nbsp;DGA
+                    </label>
+                    <label class="col-xs-4 col-sm-2">
+                        <input type="radio" name="system" value="dri" checked>&nbsp;DRI
+                    </label>
+                </div>
+                <div class="row">
+                    <button click="recommend">Calculate</button>
+                </div>
+            </div>
+            <div vista="recommendations" id="recs">
+                <div vista="!profile">
+                    <h4 class="row hidden-xs">System:</h4>
+                        <label class="hidden-xs col-sm-3"></label>
+                        <span name="system" class="col-xs-9 col-sm-6"></span>
+                    </h4>
+                    <h4 class="row hidden-xs">Profile:</h4>
+                    <div class="row">
+                        <label class="hidden-xs col-sm-3">Sex:</label>
+                        <span name="sex" class="col-xs-9 col-sm-6"></span>
+                    </div>
+                    <div class="row">
+                        <label class="hidden-xs col-sm-3">Age:</label>
+                        <span name="ageInMonths" class="col-xs-9 col-sm-6"></span> months
+                    </div>
+                    <div class="row">
+                        <label class="hidden-xs col-sm-3">Height:</label>
+                        <span name="heightInMeters" class="col-xs-9 col-sm-6"></span> meters
+                    </div>
+                    <div class="row">
+                        <label class="hidden-xs col-sm-3">Weight:</label>
+                        <span name="weightInKilograms" class="col-xs-9 col-sm-6"></span> kg
+                    </div>
+                    <h4 class="row hidden-xs">Recommendations:</h4>
+                </div>
+                <div class="row header">
+                    <span class="col-xs-4 col-sm-4">Nutrient</span>
+                    <span class="col-xs-2 col-sm-2">NutrientUnit</span>
+                    <span class="col-xs-2 col-sm-2">Rec</span>
+                    <span class="col-xs-2 col-sm-2">RecUnit</span>
+                    <span class="col-xs-2 col-sm-2">Type</span>
+                </div>
+                <div clone insert="last">
+                    <div class="row">
+                        <span name="nutrient_name" class="col-xs-4 col-sm-4"></span>
+                        <span name="nutrient_unit" class="col-xs-2 col-sm-2"></span>
+                        <span name="value" class="col-xs-2 col-sm-2"></span>
+                        <span name="unit" class="col-xs-2 col-sm-2"></span>
+                        <span name="type" class="col-xs-2 col-sm-2"></span>
                     </div>
                 </div>
             </div>

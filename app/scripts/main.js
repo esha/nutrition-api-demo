@@ -64,6 +64,14 @@
                     'Content-Type': 'application/vnd.com.esha.data.Foods+json'
                 },
                 url: '/analysis'
+            },
+            '@recommend': {
+                requires: ['app.api.nutrients'],
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/vnd.com.esha.data.PersonalProfile+json'
+                },
+                url: '/recommendations',
             }
         }),
 
@@ -330,6 +338,55 @@
             values.clone(response.results);
             items.clone(response.items);
         },
+        recommend: function(e) {
+            var $profile = document.query('#profile'),
+                profile = $profile.xValue;
+            if (profile.sex) {
+                store('lastProfile', profile);
+            } else if (store.has('lastProfile')) {
+                profile = store('lastProfile');
+                $profile.xValue = profile;
+            }
+            if (profile.ageUnit === 'Months') {
+                profile.ageInMonths = profile.age;
+            } else {
+                profile.ageInMonths = 12 * profile.age;
+            }
+            if (profile.heightUnit === 'Meters') {
+                profile.heightInMeters = profile.height;
+            } else if (profile.height) {
+                profile.heightInMeters = 0.0254 * profile.height;
+            }
+            if (profile.weightUnit === 'Kilograms') {
+                profile.weightInKilograms = profile.weight;
+            } else if (profile.weight) {
+                profile.weightInKilograms = 0.453592 * profile.weight;
+            }
+            _.api.recommend(profile).then(function(response) {
+                _.recommendations(response);
+                if (e.type !== 'location') {
+                    Eventi.fire.location('#profile+recommendations');
+                }
+            });
+        },
+        recommendations: function(response) {
+            // location events not welcome
+            if (response.type === 'location') {
+                return _.recommend(response);
+            }
+            response.recommendations.forEach(function(rec) {
+                var type = rec.type.split('#')[1];
+                if (!type) {
+                    type = rec.type.split('/').pop().toUpperCase();
+                }
+                rec.type = type || rec.type;
+            });
+            var recs = document.query('#recs');
+            recs.xValue = response;
+            var list = recs.query('[clone]');
+            list.innerHTML = '';
+            list.clone(response.recommendations);
+        },
         network: function(direction, e) {
             var coms = store(direction);
             coms.body = JSON.stringify(coms.body, null, 2);
@@ -382,6 +439,8 @@
         'location@#query={query}': _.search,
         'location@#list': _.list,
         'location@#analysis': _.analysis,
+        'location@#recommendations': _.recommendations,
+        'location@#profile+recommendations': _.recommendations,
         'location@#view/{uri}': _.view,
         'location@#external': _.prepExternal,
         'location@#error': _.error,
@@ -394,7 +453,8 @@
         'items:analyze': _.analyze,
         'page': _.page,
         'options': _.options,
-        'change<.food>': _.update
+        'change<.food>': _.update,
+        'recommend': _.recommend
     });
 
 })(window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior, window.Vista);

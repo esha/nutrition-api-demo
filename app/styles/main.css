@@ -54,6 +54,9 @@ a[name=implementation_version] {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+.nav > li > a {
+    padding: 5px 8px;
+}
 
 .none {
     display: none;
@@ -82,6 +85,13 @@ a[click] {
 }
 #view .values > .row {
     margin-left: 0;
+}
+
+.header {
+    border-bottom: 1px solid #e5e5e5;
+}
+.header span {
+    font-weight: bold;
 }
 
 /* Custom page footer */
