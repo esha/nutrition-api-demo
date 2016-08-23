@@ -32,13 +32,13 @@ app.use(logfmt.requestLogger());
 app.get('/api/*', function(req, res) {
     request(toApi(req.originalUrl)).pipe(res);
 });
-app.post('/api/analysis', function(req, res) {
+app.post('/api/*', function(req, res) {
     req.pipe(request.post(toApi(req.originalUrl))).pipe(res);
 });
 app.get('/api-staging/*', function(req, res) {
     request(toApi(req.originalUrl, true)).pipe(res);
 });
-app.post('/api-staging/analysis', function(req, res) {
+app.post('/api-staging/*', function(req, res) {
     req.pipe(request.post(toApi(req.originalUrl, true))).pipe(res);
 });
 
