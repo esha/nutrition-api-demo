@@ -14,6 +14,7 @@ function toApi(url, staging) {
                     url.replace('/api', api);
     url += url.indexOf('?') > 0 ? '&' : '?';
     url += 'apikey='+(staging ? keyStaging : key);
+    console.log('Proxy for: '+url);
     return url;
 }
 
