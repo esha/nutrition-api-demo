@@ -347,20 +347,26 @@
                 profile = store('lastProfile');
                 $profile.xValue = profile;
             }
-            if (profile.ageUnit === 'Months') {
-                profile.ageInMonths = profile.age;
-            } else {
-                profile.ageInMonths = 12 * profile.age;
+            if (profile.age) {
+                if (profile.ageUnit === 'Months') {
+                    profile.ageInMonths = profile.age;
+                } else {
+                    profile.ageInMonths = 12 * profile.age;
+                }
             }
-            if (profile.heightUnit === 'Meters') {
-                profile.heightInMeters = profile.height;
-            } else if (profile.height) {
-                profile.heightInMeters = 0.0254 * profile.height;
+            if (profile.height) {
+                if (profile.heightUnit === 'Meters') {
+                    profile.heightInMeters = profile.height;
+                } else {
+                    profile.heightInMeters = 0.0254 * profile.height;
+                }
             }
-            if (profile.weightUnit === 'Kilograms') {
-                profile.weightInKilograms = profile.weight;
-            } else if (profile.weight) {
-                profile.weightInKilograms = 0.453592 * profile.weight;
+            if (profile.weight) {
+                if (profile.weightUnit === 'Kilograms') {
+                    profile.weightInKilograms = profile.weight;
+                } else {
+                    profile.weightInKilograms = 0.453592 * profile.weight;
+                }
             }
             _.api.recommend(profile).then(function(response) {
                 _.recommendations(response);
