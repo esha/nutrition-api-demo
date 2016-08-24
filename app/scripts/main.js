@@ -386,6 +386,7 @@
                     type = rec.type.split('/').pop().toUpperCase();
                 }
                 rec.type = type || rec.type;
+                rec.nutrient = _.nutrients[rec.nutrient] || { description: rec.nutrient };
             });
             var $recs = document.query('#recs');
             $recs.xValue = response;
