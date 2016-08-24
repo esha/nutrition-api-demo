@@ -387,11 +387,27 @@
                 }
                 rec.type = type || rec.type;
             });
-            var recs = document.query('#recs');
-            recs.xValue = response;
-            var list = recs.query('[clone]');
+            var $recs = document.query('#recs');
+            $recs.xValue = response;
+            var list = $recs.query('[clone]');
             list.innerHTML = '';
             list.clone(response.recommendations);
+
+            var $profile = document.query('#profile'),
+                profile = $profile.xValue;
+            if (!profile.age) {
+                profile.age = response.profile.ageInMonths;
+                profile.ageUnit = 'Months';
+            }
+            if (!profile.weight) {
+                profile.weight = response.profile.weightInKilograms;
+                profile.weightUnit = 'Kilograms';
+            }
+            if (!profile.height) {
+                profile.height = response.profile.heightInMeters;
+                profile.heightUnit = 'Meters';
+            }
+            $profile.xValue = profile;
         },
         network: function(direction, e) {
             var coms = store(direction);
