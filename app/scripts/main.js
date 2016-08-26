@@ -348,25 +348,13 @@
                 $profile.xValue = profile;
             }
             if (profile.age) {
-                if (profile.ageUnit === 'Months') {
-                    profile.ageInMonths = profile.age;
-                } else {
-                    profile.ageInMonths = 12 * profile.age;
-                }
+                profile['ageIn'+profile.ageUnit] = profile.age;
             }
             if (profile.height) {
-                if (profile.heightUnit === 'Meters') {
-                    profile.heightInMeters = profile.height;
-                } else {
-                    profile.heightInMeters = 0.0254 * profile.height;
-                }
+                profile['heightIn'+profile.heightUnit] = profile.height;
             }
             if (profile.weight) {
-                if (profile.weightUnit === 'Kilograms') {
-                    profile.weightInKilograms = profile.weight;
-                } else {
-                    profile.weightInKilograms = 0.453592 * profile.weight;
-                }
+                profile['weightIn'+profile.weightUnit] = profile.weight;
             }
             _.api.recommend(profile).then(function(response) {
                 _.recommendations(response);
