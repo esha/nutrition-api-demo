@@ -300,7 +300,7 @@
             _.items = [];
             _.list();
         },
-        analyze: function(e) {
+        analyze: function() {
             var foodlist = { items: [] };
             _.items.forEach(function(item) {
                 var food = {
@@ -314,18 +314,9 @@
                 }
                 foodlist.items.push(food);
             });
-            _.api.analyze(foodlist).then(function(response) {
-                _.analysis(response);
-                if (e.type !== 'location') {
-                    Eventi.fire.location('#analysis');
-                }
-            });
+            _.api.analyze(foodlist).then(_.analysis);
         },
         analysis: function(response) {
-            // location events not welcome
-            if (response.type === 'location') {
-                return _.analyze(response);
-            }
             response.items.forEach(function(item) {
                 item.unit = _.foodunits[item.unit] || item.unit;
             });
@@ -338,7 +329,7 @@
             values.clone(response.results);
             items.clone(response.items);
         },
-        recommend: function(e) {
+        recommend: function() {
             var $profile = document.query('#profile'),
                 profile = $profile.xValue;
             if (profile.sex) {
@@ -356,18 +347,9 @@
             if (profile.weight) {
                 profile['weightIn'+profile.weightUnit] = profile.weight;
             }
-            _.api.recommend(profile).then(function(response) {
-                _.recommendations(response);
-                if (e.type !== 'location') {
-                    Eventi.fire.location('#profile+recommendations');
-                }
-            });
+            _.api.recommend(profile).then(_.recommendations);
         },
         recommendations: function(response) {
-            // location events not welcome
-            if (response.type === 'location') {
-                return _.recommend(response);
-            }
             response.recommendations.forEach(function(rec) {
                 var type = rec.type.split('#')[1];
                 if (!type) {
@@ -449,9 +431,9 @@
         'location@#response': _.network.bind(_, 'response'),
         'location@#query={query}': _.search,
         'location@#list': _.list,
-        'location@#analysis': _.analysis,
-        'location@#recommendations': _.recommendations,
-        'location@#profile+recommendations': _.recommendations,
+        'location@#analysis': _.analyze,
+        'location@#recommendations': _.recommend,
+        'location@#profile+recommendations': _.recommend,
         'location@#view/{uri}': _.view,
         'location@#external': _.prepExternal,
         'location@#error': _.error,
@@ -461,11 +443,9 @@
         'items:view<.food>': _.view,
         'items:remove<.food>': _.remove,
         'items:clear': _.clear,
-        'items:analyze': _.analyze,
         'page': _.page,
         'options': _.options,
-        'change<.food>': _.update,
-        'recommend': _.recommend
+        'change<.food>': _.update
     });
 
 })(window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior, window.Vista);
