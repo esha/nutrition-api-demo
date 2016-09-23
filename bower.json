@@ -10,9 +10,9 @@
     "jquery": "~1.10.2",
     "vista": "^3.0.0",
     "posterior": "^0.16.0",
-    "domx": "^0.16.1",
+    "domx": "^0.17.0",
     "domx-value": "^0.2.13",
-    "domx-repeat": "^0.3.1"
+    "domx-repeat": "^0.3.2"
   },
   "devDependencies": {}
 }
