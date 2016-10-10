@@ -1,6 +1,15 @@
 (function(Eventi, HTML, store, Clone, Posterior, Vista) {
     'use strict';
 
+    var apikey = (function() {
+            var match = location.search.match(/apikey=(\w+)/);
+            return match ? match[1] : store('apikey');
+        })(),
+        addKey = function(url) {
+            console.log(apikey ? url + '?apikey='+apikey : url);
+            return apikey ? url + '?apikey='+apikey : url;
+        };
+
     var _ = window.app = {
         api: new Posterior({
             url: '/api'+(location.toString().indexOf('staging') > 0 ? '-staging' : ''),
@@ -50,8 +59,8 @@
                 url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
             '@view': {
-                requires: ['app.api.foodunits', 'app.api.nutrients'],
-                url: '/food/{0}',
+                requires: ['app.api.units', 'app.api.nutrients'],
+                url: addKey('/food/{0}'),
                 then: function(food) {
                     food.nutrient_data = food.nutrient_data.filter(function(datum) {
                         // limit demo to calories
@@ -70,7 +79,7 @@
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.Foods+json'
                 },
-                url: '/analysis'
+                url: addKey('/analysis')
             },
             '@recommend': {
                 requires: ['app.api.nutrients', 'app.api.units'],
@@ -78,7 +87,7 @@
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.PersonalProfile+json'
                 },
-                url: '/recommendations',
+                url: addKey('/recommendations'),
             }
         }),
 

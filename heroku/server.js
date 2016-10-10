@@ -9,11 +9,24 @@ var apiStaging = process.env.API_STAGING || 'http://api-staging.esha.com';
 var key = process.env.APIKEY;
 var keyStaging = process.env.API_STAGINGKEY;
 
+if (apiStaging.indexOf('http://localhost') === 0) {
+    var allNutrients = '&n=';
+    for (var i=0; i<208; i++) {
+        allNutrients += i+',';
+    }
+    allNutrients += '510,521,524,525,526,550,554,555,556,557,562,563,565,1001,1004,1005';
+}
+
 function toApi(url, staging) {
     url = staging ? url.replace('/api-staging', apiStaging) :
                     url.replace('/api', api);
     url += url.indexOf('?') > 0 ? '&' : '?';
-    url += 'apikey='+(staging ? keyStaging : key);
+    if (url.indexOf('apikey') < 0) {
+        url += 'apikey='+(staging ? keyStaging : key);
+    }
+    if (allNutrients) {
+        url += allNutrients;
+    }
     console.log('Proxy for: '+url);
     return url;
 }
