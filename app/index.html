@@ -38,7 +38,8 @@
                     <ul class="nav nav-pills col-sm-6">
                         <li><a href="#list">My List</a></li>
                         <li><a href="#nutrients">Nutrients</a></li>
-                        <li><a href="#foodunits">FoodUnits</a></li>
+                        <li vista="!staging"><a href="#foodunits">FoodUnits</a></li>
+                        <li vista="staging"><a href="#units">Units</a></li>
                         <li vista="staging"><a href="#profile" title="Recommendations">Recs</a></li>
                     </ul>
                     <div id="options" class="hidden col-sm-6 small">
@@ -261,7 +262,20 @@
                 </div>
             </div>
 
+            <div vista="units">
+                <div clone insert="last">
+                    <div class="row">
+                        <span class="col-sm-4 col-xs-12" name="description"></span>
+                        <span class="col-sm-8 hidden-xs" name="id"></span>
+                    </div>
+                </div>
+            </div>
+
             <div vista="foodunits">
+                <h3 vista="staging" class="warning">
+                    <code>/food-units</code> is deprecated in 2.0.
+                    Please use <code>/units</code> instead.
+                </h3>
                 <div clone insert="last">
                     <div class="row">
                         <span class="col-sm-4 col-xs-12" name="description"></span>
@@ -350,7 +364,8 @@
                     </label>
                 </div>
                 <div class="row">
-                    <button click="location@#profile+recommendations">Calculate</button>
+                    <button vista="!recommendations" click="location@#profile+recommendations">Calculate</button>
+                    <button vista="recommendations" click="recommend">Recalculate</button>
                 </div>
             </div>
             <div vista="recommendations" id="recs">
@@ -380,17 +395,15 @@
                 </div>
                 <div class="row header">
                     <span class="col-xs-4 col-sm-4">Nutrient</span>
-                    <span class="col-xs-2 col-sm-2">NutrientUnit</span>
-                    <span class="col-xs-2 col-sm-2">Rec</span>
-                    <span class="col-xs-2 col-sm-2">RecUnit</span>
+                    <span class="col-xs-2 col-sm-2">Value</span>
+                    <span class="col-xs-2 col-sm-2">Unit</span>
                     <span class="col-xs-2 col-sm-2">Type</span>
                 </div>
                 <div clone insert="last">
                     <div class="row">
                         <span name="nutrient.description" class="col-xs-4 col-sm-4"></span>
-                        <span name="nutrient.unit" class="col-xs-2 col-sm-2"></span>
                         <span name="value" class="col-xs-2 col-sm-2"></span>
-                        <span name="unit" class="col-xs-2 col-sm-2"></span>
+                        <span name="unit.abbr" class="col-xs-2 col-sm-2"></span>
                         <span name="type" class="col-xs-2 col-sm-2"></span>
                     </div>
                 </div>

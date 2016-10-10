@@ -31,6 +31,13 @@
                     return _.buildResource(list, 'foodunits');
                 }
             },
+            '@units': {
+                url: '/units',
+                saveResult: true,
+                responseData: function(list) {
+                    return _.buildResource(list, 'units');
+                }
+            },
             '@nutrients': {
                 url: '/nutrients',
                 saveResult: true,
@@ -39,7 +46,7 @@
                 }
             },
             '@search': {
-                requires: ['app.api.foodunits'],
+                requires: ['app.api.units'],
                 url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
             '@view': {
@@ -58,7 +65,7 @@
                 }
             },
             '@analyze': {
-                requires: ['app.api.nutrients', 'app.api.foodunits'],
+                requires: ['app.api.nutrients', 'app.api.units'],
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.Foods+json'
@@ -66,7 +73,7 @@
                 url: '/analysis'
             },
             '@recommend': {
-                requires: ['app.api.nutrients'],
+                requires: ['app.api.nutrients', 'app.api.units'],
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.PersonalProfile+json'
@@ -168,7 +175,7 @@
             var all = HTML.query('#results'),
                 items = all.query('[clone]');
             items.innerHTML = '';
-            results.items.forEach(_.processFoodUnits);
+            results.items.forEach(_.processUnits);
             items.clone(results.items);
 
             var feedback = all.query('#feedback'),
@@ -216,8 +223,8 @@
                     unit: 'urn:uuid:85562e85-ba37-4e4a-8400-da43170204a7'//Each
                 };
             }
-            _.api.foodunits().then(function() {
-                units.clone(_.foodunits.__list__);
+            _.api.units().then(function() {
+                units.clone(_.units.__list__);
                 external.values(vals);
                 units.value = vals.unit;
             });
@@ -225,7 +232,7 @@
         externalBaseUri: 'external_',
         external: function() {
             var external = HTML.query('#external'),
-                unit = _.foodunits[external.query('[name=unit]').value],
+                unit = _.units[external.query('[name=unit]').value],
                 food = {
                     id: external.values('id'),
                     description: external.values('description'),
@@ -246,7 +253,7 @@
                 _.api.view(id).then(function viewFood(food) {
                     var view = HTML.query('#view'),
                         values = view.query('[clone].values');
-                    _.processFoodUnits(food);
+                    _.processUnits(food);
                     food.units = food.units.map(function(unit) {
                         return unit.description;
                     }).join(', ');
@@ -272,16 +279,19 @@
                 }
             });
         },
-        processFoodUnits: function(food) {
-            food.unit = _.foodunits[food.unit] || food.unit;
-            if (food.units) {
-                food.units = food.units.map(function(unit) {
-                    return _.foodunits[unit] || unit;
+        // should handle both foods and recommendations
+        processUnits: function(obj) {
+            obj.unit = _.units[obj.unit] || obj.unit;
+            if (obj.units) {
+                obj.units = obj.units.map(function(unit) {
+                    return _.units[unit] || unit;
                 });
             }
         },
         processNutrientDatum: function(datum) {
-            datum.value = Math.round(datum.value * 10) / 10;
+            if (typeof datum.value === 'number') {
+                datum.value = Math.round(datum.value * 10) / 10;
+            }
             datum.nutrient = _.nutrients[datum.nutrient] || datum.nutrient;
         },
         update: function(e) {
@@ -289,7 +299,7 @@
                 values = _.items[index],
                 name = e.target.getAttribute('name'),
                 value = e.target.value;
-            values[name] = name === 'unit' ? _.foodunits[value] : value;
+            values[name] = name === 'unit' ? _.units[value] : value;
         },
         remove: function() {
             var index = this.nearest('[index]').getAttribute('index');
@@ -318,7 +328,7 @@
         },
         analysis: function(response) {
             response.items.forEach(function(item) {
-                item.unit = _.foodunits[item.unit] || item.unit;
+                item.unit = _.units[item.unit] || item.unit;
             });
             response.results.forEach(_.processNutrientDatum);
             var el = HTML.query('#analysis'),
@@ -356,7 +366,8 @@
                     type = rec.type.split('/').pop().toUpperCase();
                 }
                 rec.type = type || rec.type;
-                rec.nutrient = _.nutrients[rec.nutrient] || { description: rec.nutrient };
+                _.processNutrientDatum(rec);
+                _.processUnits(rec);
             });
             var $recs = document.query('#recs');
             $recs.xValue = response;
@@ -426,7 +437,7 @@
     Eventi.alias('location');
     Eventi.on(window, {
         'location@#service': _.service,
-        'location@`#(nutrients|foodunits)`': _.resource,
+        'location@`#(nutrients|units|foodunits)`': _.resource,
         'location@#request': _.network.bind(_, 'request'),
         'location@#response': _.network.bind(_, 'response'),
         'location@#query={query}': _.search,
@@ -438,6 +449,7 @@
         'location@#external': _.prepExternal,
         'location@#error': _.error,
         'search': _.search,
+        'recommend': _.recommend,
         'items:add<.food>': _.add,
         'items:external<.food>': _.external,
         'items:view<.food>': _.view,
