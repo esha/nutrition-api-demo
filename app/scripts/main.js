@@ -370,11 +370,6 @@
         },
         recommendations: function(response) {
             response.recommendations.forEach(function(rec) {
-                var type = rec.type.split('#')[1];
-                if (!type) {
-                    type = rec.type.split('/').pop().toUpperCase();
-                }
-                rec.type = type || rec.type;
                 _.processNutrientDatum(rec);
                 _.processUnits(rec);
             });
