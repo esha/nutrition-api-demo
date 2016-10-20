@@ -339,7 +339,7 @@
         },
         analysis: function(response) {
             response.items.forEach(function(item) {
-                item.unit = _.units[item.unit] || item.unit;
+                item.unit = (_.units||_.foodunits)[item.unit] || item.unit;
             });
             response.results.forEach(_.processNutrientDatum);
             var el = HTML.query('#analysis'),
