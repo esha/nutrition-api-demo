@@ -9,10 +9,11 @@
             console.log(apikey ? url + '?apikey='+apikey : url);
             return apikey ? url + '?apikey='+apikey : url;
         };
-
+    var staging = location.toString().indexOf('staging') > 0,
+        unitsAPI = staging ? 'app.api.units' : 'app.api.foodunits';
     var _ = window.app = {
         api: new Posterior({
-            url: '/api'+(location.toString().indexOf('staging') > 0 ? '-staging' : ''),
+            url: '/api'+(staging ? '-staging' : ''),
             debug: true,
             throttle: { key: 'staging', ms: 510 },// allow ~2 calls/second
             requestData: function(data) {
@@ -55,11 +56,11 @@
                 }
             },
             '@search': {
-                requires: ['app.api.units'],
+                requires: [unitsAPI],
                 url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
             '@view': {
-                requires: ['app.api.units', 'app.api.nutrients'],
+                requires: [unitsAPI, 'app.api.nutrients'],
                 url: addKey('/food/{0}'),
                 then: function(food) {
                     food.nutrient_data = food.nutrient_data.filter(function(datum) {
@@ -74,7 +75,7 @@
                 }
             },
             '@analyze': {
-                requires: ['app.api.nutrients', 'app.api.units'],
+                requires: ['app.api.nutrients', unitsAPI],
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.Foods+json'
@@ -290,10 +291,11 @@
         },
         // should handle both foods and recommendations
         processUnits: function(obj) {
-            obj.unit = _.units[obj.unit] || obj.unit;
+            var units = _.units||_.foodunits;
+            obj.unit = units[obj.unit] || obj.unit;
             if (obj.units) {
                 obj.units = obj.units.map(function(unit) {
-                    return _.units[unit] || unit;
+                    return units[unit] || unit;
                 });
             }
         },
