@@ -292,7 +292,7 @@
         // should handle both foods and recommendations
         processUnits: function(obj) {
             var units = _.units||_.foodunits;
-            obj.unit = units[obj.unit] || obj.unit;
+            obj.unit = units[obj.unitId || obj.unit] || obj.unit;
             if (obj.units) {
                 obj.units = obj.units.map(function(unit) {
                     return units[unit] || unit;
