@@ -141,30 +141,21 @@
             } else {
                 input.focus();
             }
-            _.query('search', params);
+            _.api.search(params).then(_.queryResults);
         },
-        query: function(name, params) {
-            _.api.search(params).then(function(results) {
-                _.results(results);
-                _.controls(results);
-            });
+        queryResults: function(results) {
+            _.results(results);
+            _.controls(results);
         },
         controls: function(results) {
-            var pages = Object.keys(results).filter(function(key) {
-                return key.indexOf('_page') > 0;
-            });
-            HTML.query('[click=page]').each(function(el) {
-                el.classList.toggle('hidden', !results.total || pages.indexOf(el.id+'_page') < 0);
+            HTML.queryAll('[click="page"]').each(function(el) {
+                el.url = results[el.id+'_page'];
+                el.classList.toggle('hidden', !el.url);
             });
         },
         page: function(e) {
-            var coms = store('response'),
-                results = coms.body,
-                page = e.target.id+'_page',
-                url = results && results[page];
-            if (url) {
-                _.query(url);
-            }
+            _.api.extend({ url: e.target.url })()
+                .then(_.queryResults);
         },
         options: function() {
             HTML.query('#options').classList.toggle('hidden');
