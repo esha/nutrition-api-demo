@@ -6,7 +6,6 @@
             return match ? match[1] : store('apikey');
         })(),
         addKey = function(url) {
-            console.log(apikey ? url + '?apikey='+apikey : url);
             return apikey ? url + '?apikey='+apikey : url;
         };
     var staging = location.toString().indexOf('staging') > 0,
