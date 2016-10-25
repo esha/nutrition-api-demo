@@ -368,6 +368,7 @@
             if (profile.weight) {
                 profile['weightIn'+profile.weightUnit] = profile.weight;
             }
+            // these extra fields are harmless, but misleading
             delete profile.age;
             delete profile.ageUnit;
             delete profile.height;
