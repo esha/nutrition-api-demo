@@ -368,6 +368,12 @@
             if (profile.weight) {
                 profile['weightIn'+profile.weightUnit] = profile.weight;
             }
+            delete profile.age;
+            delete profile.ageUnit;
+            delete profile.height;
+            delete profile.heightUnit;
+            delete profile.weight;
+            delete profile.weightUnit;
             _.api.recommend(profile).then(_.recommendations);
         },
         recommendations: function(response) {
