@@ -60,18 +60,7 @@
             },
             '@view': {
                 requires: [unitsAPI, 'app.api.nutrients'],
-                url: addKey('/food/{0}'),
-                then: function(food) {
-                    food.nutrient_data = food.nutrient_data.filter(function(datum) {
-                        // limit demo to calories
-                        return datum.nutrient === 'urn:uuid:a4d01e46-5df2-4cb3-ad2c-6b438e79e5b9';
-                    });
-                    // override actual data to hide all nutrients but calories
-                    var coms = store('response');
-                    coms.data = food;
-                    store('response', coms);
-                    return food;
-                }
+                url: addKey('/food/{0}')
             },
             '@analyze': {
                 requires: ['app.api.nutrients', unitsAPI],
