@@ -363,6 +363,7 @@
             });
             var $recs = document.query('#recs');
             $recs.xValue = response;
+            D.query('[name=bodyMassIndex]').value = response.profile.bodyMassIndex;
             var list = $recs.query('[clone]');
             list.innerHTML = '';
             list.clone(response.recommendations);
