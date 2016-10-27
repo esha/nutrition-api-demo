@@ -1,4 +1,4 @@
-(function(D, Eventi, HTML, store, Clone, Posterior, Vista) {
+(function(D, Eventi, store, Clone, Posterior, Vista) {
     'use strict';
 
     var apikey = (function() {
@@ -29,7 +29,7 @@
                 url: '/',
                 auto: true,
                 then: function(service) {
-                    HTML.query('[name=implementation_version]').innerHTML = service.implementation_version;
+                    D.query('[name=implementation_version]').innerHTML = service.implementation_version;
                     return service;
                 }
             },
@@ -123,9 +123,9 @@
             });
         },
         search: function(e, path, query) {
-            var options = HTML.query('#options',1),
+            var options = D.query('#options',1),
                 params = options.classList.contains('hidden') ? {} : options.values(),
-                input = HTML.query('input[name=query]');
+                input = D.query('input[name=query]');
             if (query) {
                 params.query = query;
                 input.value = decodeURIComponent(query);
@@ -137,7 +137,7 @@
                 if (location.hash !== path) {
                     Eventi.fire.location(path);
                 }
-                HTML.query('#results').values('query', params.query);
+                D.query('#results').values('query', params.query);
             } else {
                 input.focus();
             }
@@ -148,7 +148,7 @@
             _.controls(results);
         },
         controls: function(results) {
-            HTML.queryAll('[click="page"]').each(function(el) {
+            D.queryAll('[click="page"]').each(function(el) {
                 el.url = results[el.id+'_page'];
                 el.classList.toggle('hidden', !el.url);
             });
@@ -158,29 +158,29 @@
                 .then(_.queryResults);
         },
         options: function() {
-            HTML.query('#options').classList.toggle('hidden');
+            D.query('#options').classList.toggle('hidden');
         },
         results: function(results) {
-            var all = HTML.query('#results'),
+            var all = D.query('#results'),
                 items = all.query('[clone]');
             items.innerHTML = '';
             results.items.forEach(_.processUnits);
             items.clone(results.items);
 
             var feedback = all.query('#feedback'),
-                url = HTML.values('url'),
+                url = D.documentElement.values('url'),
                 start = url && url.match(/start=(\d+)/);
             results.start = start && parseInt(start[1]) || 0;
             results.end = results.start + results.items.length - 1;
             feedback.classList.toggle('hidden', !results.items.length);
             feedback.values(results);
 
-            var param = HTML.query('input[name=query]').value;
+            var param = D.query('input[name=query]').value;
             all.classList.toggle('misspelled', results.query !== param);
         },
         items: store('list')||[],
         list: function() {
-            var all = HTML.query('#list'),
+            var all = D.query('#list'),
                 items = all.query('[clone]');
             if (items.children.length !== _.items.length) {
                 setTimeout(function() {
@@ -202,7 +202,7 @@
             Eventi.fire.location('#list');
         },
         prepExternal: function(vals) {
-            var external = HTML.query('#external'),
+            var external = D.query('#external'),
                 units = external.query('select[name=unit]');
             if (!vals || !vals.quantity) {
                 vals = {
@@ -220,7 +220,7 @@
         },
         externalBaseUri: 'external_',
         external: function() {
-            var external = HTML.query('#external'),
+            var external = D.query('#external'),
                 unit = _.units[external.query('[name=unit]').value],
                 food = {
                     id: external.values('id'),
@@ -240,7 +240,7 @@
         view: function(e, path, id) {
             if (id) {
                 _.api.view(id).then(function viewFood(food) {
-                    var view = HTML.query('#view'),
+                    var view = D.query('#view'),
                         values = view.query('[clone].values');
                     _.processUnits(food);
                     food.units = food.units.map(function(unit) {
@@ -321,7 +321,7 @@
                 item.unit = (_.units||_.foodunits)[item.unit] || item.unit;
             });
             response.results.forEach(_.processNutrientDatum);
-            var el = HTML.query('#analysis'),
+            var el = D.query('#analysis'),
                 values = el.query('[clone].values'),
                 items = el.query('[clone].items');
             values.innerHTML = '';
@@ -394,14 +394,14 @@
                 .replace(/",?/g, '')// quotes and commas
                 .substring(2).replace('\n}','\n')// parentheses
             ;
-            HTML.query('[name="network"]').values(coms);
+            D.query('[name="network"]').values(coms);
             _.updateAPI(coms);
             if (e.type !== 'location') {
                 Eventi.fire.location('#'+direction);
             }
         },
         updateAPI: function(request) {
-            HTML.query('.api').values(request || store('request'));
+            D.query('.api').values(request || store('request'));
         },
         error: function(e) {
             var response = store('response'),
@@ -409,14 +409,14 @@
                     response.body.messages[0] :
                     { text: e.type === 'location' ? '' : e };
             message.status = response.status;
-            HTML.query('[name=error]').values(message);
+            D.query('[name=error]').values(message);
             if (!e || e.type !== 'location') {
                 Eventi.fire.location('#error');
             }
         },
         resource: function(e, path, name) {
             _.api[name]().then(function(response) {
-                var container = HTML.query('[vista="'+name+'"] [clone]');
+                var container = D.query('[vista="'+name+'"] [clone]');
                 container.innerHTML = '';
                 container.clone(response.__list__);
                 // restore cached network coms
@@ -453,4 +453,4 @@
         'change<.food>': _.update
     });
 
-})(document, window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior, window.Vista);
+})(document, window.Eventi, window.store, window.Clone, window.Posterior, window.Vista);
