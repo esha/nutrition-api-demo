@@ -1,4 +1,4 @@
-(function(Eventi, HTML, store, Clone, Posterior, Vista) {
+(function(D, Eventi, HTML, store, Clone, Posterior, Vista) {
     'use strict';
 
     var apikey = (function() {
@@ -330,7 +330,7 @@
             items.clone(response.items);
         },
         recommend: function() {
-            var $profile = document.query('#profile'),
+            var $profile = D.query('#profile'),
                 profile = $profile.xValue;
             if (profile.sex) {
                 store('lastProfile', profile);
@@ -361,14 +361,14 @@
                 _.processNutrientDatum(rec);
                 _.processUnits(rec);
             });
-            var $recs = document.query('#recs');
+            var $recs = D.query('#recs');
             $recs.xValue = response;
             D.query('[name=bodyMassIndex]').value = response.profile.bodyMassIndex;
             var list = $recs.query('[clone]');
             list.innerHTML = '';
             list.clone(response.recommendations);
 
-            var $profile = document.query('#profile'),
+            var $profile = D.query('#profile'),
                 profile = $profile.xValue;
             if (!profile.age) {
                 profile.age = response.profile.ageInMonths;
@@ -453,4 +453,4 @@
         'change<.food>': _.update
     });
 
-})(window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior, window.Vista);
+})(document, window.Eventi, document.documentElement, window.store, window.Clone, window.Posterior, window.Vista);
