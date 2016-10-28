@@ -355,6 +355,13 @@
             delete profile.weight;
             delete profile.weightUnit;
             delete profile.bodyMassIndex;
+            // these are just noisy
+            if (!profile.pregnancyDurationInWeeks) {
+                delete profile.pregnancyDurationInWeeks;
+            }
+            if (!profile.lactationDurationInMonths) {
+                delete profile.lactationDurationInMonths;
+            }
             _.api.recommend(profile).then(_.recommendations);
         },
         recommendations: function(response) {
