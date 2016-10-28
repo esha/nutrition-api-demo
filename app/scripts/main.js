@@ -354,6 +354,7 @@
             delete profile.heightUnit;
             delete profile.weight;
             delete profile.weightUnit;
+            delete profile.bodyMassIndex;
             _.api.recommend(profile).then(_.recommendations);
         },
         recommendations: function(response) {
