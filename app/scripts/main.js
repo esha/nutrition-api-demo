@@ -362,6 +362,9 @@
             if (!profile.lactationDurationInMonths) {
                 delete profile.lactationDurationInMonths;
             }
+            if (!profile.physicalActivityLevelCategory) {
+                delete profile.physicalActivityLevelCategory;
+            }
             _.api.recommend(profile).then(_.recommendations);
         },
         recommendations: function(response) {
@@ -372,6 +375,8 @@
             var $recs = D.query('#recs');
             $recs.xValue = response;
             D.query('[name=bodyMassIndex]').value = response.profile.bodyMassIndex;
+            D.query('[name=physicalActivityLevelCategory]').value =
+                response.profile.physicalActivityLevelCategory;
             var list = $recs.query('[clone]');
             list.innerHTML = '';
             list.clone(response.recommendations);
