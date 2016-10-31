@@ -8,8 +8,7 @@
         addKey = function(url) {
             return apikey ? url + '?apikey='+apikey : url;
         };
-    var staging = location.toString().indexOf('staging') > 0,
-        unitsAPI = staging ? 'app.api.units' : 'app.api.foodunits';
+    var staging = location.toString().indexOf('staging') > 0;
     var _ = window.app = {
         api: new Posterior({
             url: '/api'+(staging ? '-staging' : ''),
@@ -33,13 +32,6 @@
                     return service;
                 }
             },
-            '@foodunits': {
-                url: '/food-units',
-                saveResult: true,
-                responseData: function(list) {
-                    return _.buildResource(list, 'foodunits');
-                }
-            },
             '@units': {
                 url: '/units',
                 saveResult: true,
@@ -55,15 +47,15 @@
                 }
             },
             '@search': {
-                requires: [unitsAPI],
+                requires: ['app.api.units'],
                 url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
             },
             '@view': {
-                requires: [unitsAPI, 'app.api.nutrients'],
+                requires: ['app.api.units', 'app.api.nutrients'],
                 url: addKey('/food/{0}')
             },
             '@analyze': {
-                requires: ['app.api.nutrients', unitsAPI],
+                requires: ['app.api.nutrients', 'app.api.units'],
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.Foods+json'
@@ -270,11 +262,10 @@
         },
         // should handle both foods and recommendations
         processUnits: function(obj) {
-            var units = _.units||_.foodunits;
-            obj.unit = units[obj.unitId || obj.unit] || obj.unit;
+            obj.unit = _.units[obj.unitId || obj.unit] || obj.unit;
             if (obj.units) {
                 obj.units = obj.units.map(function(unit) {
-                    return units[unit] || unit;
+                    return _.units[unit] || unit;
                 });
             }
         },
@@ -318,7 +309,7 @@
         },
         analysis: function(response) {
             response.items.forEach(function(item) {
-                item.unit = (_.units||_.foodunits)[item.unit] || item.unit;
+                item.unit = _.units[item.unit] || item.unit;
             });
             response.results.forEach(_.processNutrientDatum);
             var el = D.query('#analysis'),
@@ -443,7 +434,7 @@
     Eventi.alias('location');
     Eventi.on(window, {
         'location@#service': _.service,
-        'location@`#(nutrients|units|foodunits)`': _.resource,
+        'location@`#(nutrients|units)`': _.resource,
         'location@#request': _.network.bind(_, 'request'),
         'location@#response': _.network.bind(_, 'response'),
         'location@#query={query}': _.search,
