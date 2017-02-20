@@ -418,11 +418,34 @@
                 Eventi.fire.location('#error');
             }
         },
+        goto: function(e) {
+            var name = e.category,
+                query = '[name$="'+name+'Id"],[name$="'+name+'.id"]',
+                idSource = e.target.parentElement.query(query);
+            if (idSource) {
+                var id = idSource.textContent;
+                Eventi.fire.location('#'+name+'s');
+                setTimeout(function() {
+                    var cell = D.body.query('[id="'+id+'"]');
+                    if (cell) {
+                        var row = cell.parentElement;
+                        row.scrollIntoView();
+                        row.classList.add('goto-target');
+                    }
+                }, 500);
+            }
+        },
         resource: function(e, path, name) {
             _.api[name]().then(function(response) {
                 var container = D.query('[vista="'+name+'"] [clone]');
                 container.innerHTML = '';
                 container.clone(response.__list__);
+
+                // mirror id in attribute for selection ease
+                container.queryAll('[name="id"]').each(function(id) {
+                    id.setAttribute('id', id.textContent);
+                });
+
                 // restore cached network coms
                 store('response', store(name+'.response'));
                 store('request', store(name+'.request'));
@@ -452,6 +475,7 @@
         'items:view<.food>': _.view,
         'items:remove<.food>': _.remove,
         'items:clear': _.clear,
+        'goto': _.goto,
         'page': _.page,
         'options': _.options,
         'change<.food>': _.update

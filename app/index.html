@@ -97,7 +97,8 @@
                 <div class="food row">
                     <span vista="query" class="col-xs-4">
                         <span name="quantity"></span>
-                        <span name="unit.description"></span>
+                        <span name="unit.description" click="unit:goto"></span>
+                        <span class="hidden" name="unit.id"></span>
                     </span>
                     <span vista="list" class="col-xs-4">
                         <input name="quantity" size="2">
@@ -190,7 +191,8 @@
                 <span class="row">
                     <label for="quantity">Default Amount:</label>
                     <span name="quantity"></span>
-                    <span name="unit.description"></span>
+                    <span name="unit.description" click="unit:goto"></span>
+                    <span class="hidden" name="unit.id"></span>
                 </span>
                 <span class="row">
                     <label for="group">Group:</label>
@@ -219,10 +221,12 @@
                 <label for="values">Nutrition Values:</label>
                 <div class="values" clone insert="last">
                     <div class="row">
-                        <span class="col-sm-8" name="nutrient.description"></span>
+                        <span class="col-sm-8" name="nutrient.description" click="nutrient:goto"></span>
+                        <span class="hidden" name="nutrient.id"></span>
                         <span class="col-sm-4">
                             <span name="value"></span>
-                            <span name="nutrient.unit"></span>
+                            <span name="nutrient.unit" click="unit:goto"></span>
+                            <span class="hidden" name="nutrient.unitId"></span>
                         </span>
                     </div>
                 </div>
@@ -235,10 +239,12 @@
                 <h4>Nutrient Values:</h4>
                 <div class="values" clone insert="last">
                     <div class="row">
-                        <span class="col-sm-8" name="nutrient.description"></span>
+                        <span class="col-sm-8" name="nutrient.description" click="nutrient:goto"></span>
+                        <span class="hidden" name="nutrient.id"></span>
                         <span class="col-sm-4">
                             <span name="value"></span>
-                            <span name="nutrient.unit"></span>
+                            <span name="nutrient.unit" click="unit:goto"></span>
+                            <span class="hidden" name="nutrient.unitId"></span>
                         </span>
                     </div>
                 </div>
@@ -252,6 +258,7 @@
                         <span class="col-sm-4 hidden-xs">
                             <span name="quantity"></span>
                             <span name="unit.description"></span>
+                            <span class="hidden" name="unit.id"></span>
                         </span>
                         <a class="col-sm-8" name="description" click="items:view"></a>
                     </div>
@@ -274,7 +281,8 @@
                 <div clone insert="last">
                     <div class="row">
                         <span name="description" class="col-xs-9 col-sm-3"></span>
-                        <span name="unit" class="col-xs-3 col-sm-2"></span>
+                        <span name="unit" class="col-xs-3 col-sm-2" click="unit:goto"></span>
+                        <span class="hidden" name="unitId"></span>
                         <span class="col-sm-7 hidden-xs" name="id"></span>
                     </div>
                 </div>
@@ -390,10 +398,12 @@
                 </div>
                 <div clone insert="last">
                     <div class="row">
-                        <span name="nutrient.description" class="col-xs-4 col-sm-4"></span>
+                        <span name="nutrient.description" class="col-xs-4 col-sm-4" click="nutrient:goto"></span>
                         <span name="value" class="col-xs-2 col-sm-2"></span>
-                        <span name="unit.abbr" class="col-xs-2 col-sm-2"></span>
+                        <span name="unit.abbr" class="col-xs-2 col-sm-2" click="unit:goto"></span>
                         <span name="type" class="col-xs-4 col-sm-4"></span>
+                        <span class="hidden" name="nutrient.id"></span>
+                        <span class="hidden" name="unit.id"></span>
                     </div>
                 </div>
                 <div id="limited" class="small text-danger">

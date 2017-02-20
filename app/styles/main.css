@@ -73,8 +73,11 @@ a[name=implementation_version] {
 label {
     margin-left: 3px;
 }
-a[click] {
+[click] {
     cursor: pointer;
+}
+[click]:hover {
+    text-decoration: underline;
 }
 #view .row label {
     margin-left: 1.3em;
@@ -85,6 +88,10 @@ a[click] {
 }
 #view .values > .row {
     margin-left: 0;
+}
+
+.goto-target {
+    outline: 1px dotted gray;
 }
 
 .header {
