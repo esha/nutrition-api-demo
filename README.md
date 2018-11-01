@@ -1,19 +1,18 @@
-First, install NodeJS (should come with NPM, might be easier to install with NVM)
-Then install the Heroku Toolbelt: https://toolbelt.heroku.com/
+First, install NodeJS 8 (It comes with NPM and might be easier to install with NVM)
 Then run these commands:
 ```
 git clone git@github.com:esha/wsdemo.git
 cd wsdemo
 npm install
 grunt
-foreman start -d dist -p 8000
+npx nf start -j Procfile.dev -p 8000
 ```
 
-Then direct your browser to ```http://127.0.0.1:8000/```
+Then direct your browser to ```http://localhost:8000/```
 
 To change the project, edit the html/css/js files in /app.
 Whenever you make a change, rebuild and restart by doing:
-```grunt && foreman start -d dist```
+```grunt && npx nf start -j Procfile.dev -p 8000```
 
 To deploy the app to Heroku, follow these instructions.
 Create your own Heroku app with:  
