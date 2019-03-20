@@ -1,0 +1,299 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "3.0",
+    "title": "Nutrition API",
+    "description": "ESHA Research API for food search, foodlist analysis, and profile recommendations",
+    "contact": {}
+  },
+  "host": "esha-nutrition.azure-api.net",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/foods": {
+      "get": {
+        "description": "",
+        "summary": "search",
+        "operationId": "FoodsGet",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "default": "broccoli",
+            "type": "string",
+            "description": "A query string"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Max number of results to return"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "default": 0,
+            "type": "integer",
+            "format": "int32",
+            "description": "(0-based) index of the first result to return (for paging)"
+          },
+          {
+            "name": "spell",
+            "in": "query",
+            "required": false,
+            "default": true,
+            "type": "boolean",
+            "description": "If true and no results are found for the specified query, apply spelling correction and re-query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON document including list of foods matching query",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/analysis": {
+      "post": {
+        "description": "",
+        "summary": "analyze",
+        "operationId": "AnalysisPost",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "default": "application/vnd.com.esha.data.Foods+json",
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/analyzeRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/food/{uri}": {
+      "get": {
+        "description": "",
+        "summary": "food",
+        "operationId": "FoodByUriGet",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "uri",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The URI of a food"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "description": "Service resource",
+        "summary": "service",
+        "operationId": "ServiceGet",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON document describing the API version info and available endpoints.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/units": {
+      "get": {
+        "description": "",
+        "summary": "units",
+        "operationId": "UnitsGet",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON document containing all known units",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/nutrients": {
+      "get": {
+        "description": "",
+        "summary": "nutrients",
+        "operationId": "NutrientsGet",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON document containing all known nutrients",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/recommendations": {
+      "post": {
+        "description": "",
+        "summary": "recommendations",
+        "operationId": "RecommendationsPost",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "default": "application/json",
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "default": "application/vnd.com.esha.data.PersonalProfile+json",
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "JSON document specifying recommendation system to be used and gender, as well as any age, height, weight, activity level, or pregnant/lactating state information to be used in calculating recommendations.",
+            "schema": {
+              "$ref": "#/definitions/recommendationsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON document containing the recommendations for the submitted profile.",
+            "headers": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "analyzeRequest": {
+      "title": "analyzeRequest",
+      "description": "",
+      "type": "object"
+    },
+    "recommendationsRequest": {
+      "title": "recommendationsRequest",
+      "description": "",
+      "type": "object"
+    }
+  },
+  "tags": []
+}

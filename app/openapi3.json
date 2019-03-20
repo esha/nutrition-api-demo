@@ -1,0 +1,336 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nutrition API",
+    "description": "ESHA Research API for food search, foodlist analysis, and profile recommendations",
+    "contact": {},
+    "version": "3.0"
+  },
+  "servers": [
+    {
+      "url": "https://esha-nutrition.azure-api.net",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/foods": {
+      "get": {
+        "summary": "search",
+        "description": "Searches for foods matching the specified query",
+        "operationId": "Search",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "query string",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "broccoli"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Max number of results to return",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 25,
+              "example": 25
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "(0-based) index of the first result to return (for paging)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "example": 0
+            }
+          },
+          {
+            "name": "spell",
+            "in": "query",
+            "description": "If true and no results are found for the specified query, apply spelling correction and re-query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "example": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON document including list of foods matching query",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/analysis": {
+      "post": {
+        "summary": "analyze",
+        "description": "Analyzes a list of food/quantity values to determine nutrient content.",
+        "operationId": "Analyze",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/vnd.com.esha.data.Foods+json"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "JSON document containing the foodlist to be analyzed",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/analyzeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "JSON document containing submitted foodlist and list of nutrient values it is determined to contain.",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/food/{uri}": {
+      "get": {
+        "summary": "food",
+        "description": "",
+        "operationId": "Food",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "uri",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "urn:uuid:17dbb668-f3f4-4822-8566-f46496887edc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON document containing all available details about the specified food.",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/": {
+        "get": {
+            "summary": "service",
+            "description": "Service resource",
+            "operationId": "Service",
+            "parameters": [
+                {
+                    "name": "Accept",
+                    "in": "header",
+                    "description": "",
+                    "required": false,
+                    "style": "simple",
+                    "explode": false,
+                    "schema": {
+                        "type": "string",
+                        "example": "application/json"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "JSON document describing the API version info and available endpoints.",
+                    "headers": {}
+                }
+            },
+            "deprecated": false
+        }
+    },
+    "/units": {
+      "get": {
+        "summary": "units",
+        "description": "",
+        "operationId": "Units",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON document containing list of all units in the database",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/nutrients": {
+      "get": {
+        "summary": "nutrients",
+        "description": "",
+        "operationId": "Nutrients",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON document containing list of all nutrients in the database",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/recommendations": {
+      "post": {
+        "summary": "recommendations",
+        "description": "",
+        "operationId": "Recommendations",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "application/vnd.com.esha.data.PersonalProfile+json"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "JSON document specifying recommendation system to be used and gender, as well as any age, height, weight, activity level, or pregnant/lactating state information to be used in calculating recommendations.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/recommendationsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "JSON document identifying full profile used for calculation as well as the calculated nutrient recommendations.",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "analyzeRequest": {
+        "title": "analyzeRequest",
+        "type": "object",
+        "description": ""
+      },
+      "recommendationsRequest": {
+        "title": "recommendationsRequest",
+        "type": "object",
+        "description": ""
+      }
+    }
+  },
+  "tags": []
+}
