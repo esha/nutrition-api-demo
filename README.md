@@ -5,14 +5,15 @@ git clone git@github.com:esha/wsdemo.git
 cd wsdemo
 npm install
 grunt
-npx nf start -j Procfile.dev -p 8000
+cd dist
+npx nf start -p 8000
 ```
 
 Then direct your browser to ```http://localhost:8000/```
 
 To change the project, edit the html/css/js files in /app.
 Whenever you make a change, rebuild and restart by doing:
-```grunt && npx nf start -j Procfile.dev -p 8000```
+```cd .. && grunt && cd dist && npx nf start -p 8000```
 
 To deploy the app to Heroku, follow these instructions.
 Create your own Heroku app with:  
