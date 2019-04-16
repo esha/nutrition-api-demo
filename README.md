@@ -4,7 +4,6 @@ Then run these commands:
 git clone git@github.com:esha/wsdemo.git
 cd wsdemo
 npm install
-grunt
 cd dist
 npx nf start -p 8000
 ```
