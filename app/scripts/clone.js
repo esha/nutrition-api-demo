@@ -2,6 +2,7 @@
     'use strict';
 
     var none = document.createElement('style');
+    var _ = {};
     none.innerHTML = '[clone] { display: none }';
     document.head.appendChild(none);
 
@@ -23,7 +24,7 @@
         document.head.removeChild(none);
     });
 
-    var _ = window.Clone = {
+    _ = window.Clone = {
         init: function(el) {
             var newRoot = el.children.length > 1,
                 node = newRoot ? document.createElement('div')

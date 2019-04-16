@@ -1,6 +1,7 @@
 (function(window) {
     'use strict';
 
+    var _ = {};
     Object.defineProperty(HTMLElement.prototype, 'values', {
         value: function values(name, vals) {
             switch (arguments.length) {
@@ -14,7 +15,7 @@
         }
     });
 
-    var _ = window.Values = {
+    _ = window.Values = {
         selector: function(name) {
             return (name && '[name="'+name+'"],[index="'+name+'"]') ||
                    '[name],[index]';
