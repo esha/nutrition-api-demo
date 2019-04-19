@@ -15,7 +15,7 @@
     "request": "^2.88.0"
   },
   "scripts": {
-    "start": "grunt && cd dist && npx nf start -p 8000",
+    "local": "grunt && cd dist && npx nf start -p 8000",
     "postinstall": "grunt",
     "test": "grunt"
   },
