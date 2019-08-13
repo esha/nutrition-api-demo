@@ -13,6 +13,10 @@ var allNutrients = '&n=0,1,2,3,4,5,6,16,17,18,19,20,21,22,23,25,26,29,30,31,' +
     '58,59,60,61,71,83,84,91,92,111,116,127,135,148,169,182,183,198,' +
     '205,207,208,209,210,211,212,213,' +
     '510,521,524,525,526,550,554,555,556,557,562,563,565,1001,1004,1005';
+var allTags = '&usda-core,brands,restaurant,'+
+    'usda,CNF,uk_foods,fndds,'+
+    'recipe,foodservice,industrial_ingredients,'+
+    'esha-core,new_world_pasta';
 
 function log(...msgs) {
     console.log(...msgs);
