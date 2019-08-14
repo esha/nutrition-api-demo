@@ -1,12 +1,21 @@
 (function(D, Eventi, store, Clone, Posterior, Vista) {
     'use strict';
 
-    var apikey = (function() {
-            var match = location.search.match(/apikey=(\w+)/);
-            return match ? match[1] : store('apikey');
-        })(),
+    function getParam(name, alt) {
+        var re = new RegExp('(\\?|&)'+name+'=(\\w+)'),
+            match = location.search.match(re);
+            return match ? match[2] : alt;
+    }
+
+    var apikey = getParam('apikey', store('apikey')),
+        version = getParam('version'),
         addKey = function(url) {
-            return apikey ? url + '?apikey='+apikey : url;
+            url = apikey ? url + '?apikey='+apikey : url;
+            if (version) {
+                url = url + (apikey ? '&' : '?') + 'version=' + version;
+            }
+            console.log(url, version, apikey);
+            return url;
         };
     var staging = location.toString().indexOf('staging') > 0;
     var _ = window.app = {
@@ -25,7 +34,7 @@
             failure: function(e){ _.error(e); },
 
             '@service' : {
-                url: '/',
+                url: addKey('/'),
                 auto: true,
                 then: function(service) {
                     D.query('[name=implementation_version]').innerHTML = service.implementation_version;
@@ -33,14 +42,14 @@
                 }
             },
             '@units': {
-                url: '/units',
+                url: addKey('/units'),
                 saveResult: true,
                 responseData: function(list) {
                     return _.buildResource(list, 'units');
                 }
             },
             '@nutrients': {
-                url: '/nutrients',
+                url: addKey('/nutrients'),
                 saveResult: true,
                 responseData: function(list) {
                     return _.buildResource(list, 'nutrients');
@@ -48,7 +57,7 @@
             },
             '@search': {
                 requires: ['app.api.units'],
-                url: '/foods?query={query}&count={count}&start={start}&spell={spell}'
+                url: addKey('/foods?query={query}&count={count}&start={start}&spell={spell}')
             },
             '@view': {
                 requires: ['app.api.units', 'app.api.nutrients'],

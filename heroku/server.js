@@ -23,21 +23,30 @@ function log(...msgs) {
     return msgs[msgs.length-1];
 }
 
+function getParam(url, name, alt) {
+    var re = new RegExp('(\\?|&)'+name+'=(\\w+)'),
+        match = url.match(re);
+    return match ? match[2] : alt;
+}
+
 function toApi(url, staging) {
-    url = staging ? url.replace('/api-staging', apiStaging) :
-                    url.replace('/api', api);
+    var version = getParam(url, 'version'),
+        _api = staging ? apiStaging : api;
+    if (version) {
+        _api += '/;rev='+version;
+        url.replace('version='+version, '');
+    }
+    url = staging ? url.replace('/api-staging', _api) :
+                    url.replace('/api', _api);
     url += url.indexOf('?') > 0 ? '&' : '?';
-    var apikey = (() => {
-        var match = url.match(/apikey=(\w+)/);
-        return match ? match[1] : staging ? keyStaging : key;
-    })();
     if (url.indexOf('localhost') > 0) {
         url += allNutrients;
     }
+    var _key = getParam(url, 'apikey', staging ? keyStaging : key);
     return log('Proxying request:', {
         url: url,
         headers: {
-            'Ocp-Apim-Subscription-Key': apikey
+            'Ocp-Apim-Subscription-Key': _key
         }
     });
 }
