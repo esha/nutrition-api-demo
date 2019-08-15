@@ -2,21 +2,28 @@
     'use strict';
 
     function getParam(name, alt) {
-        var re = new RegExp('(\\?|&)'+name+'=(\\w+)'),
+        var re = new RegExp('(\\?|&)'+name+'=([^&]+)'),
             match = location.search.match(re);
             return match ? match[2] : alt;
     }
 
     var apikey = getParam('apikey', store('apikey')),
         version = getParam('version'),
-        addKey = function(url) {
-            url = apikey ? url + '?apikey='+apikey : url;
+        finish = function(url, param) {
+            url += url.indexOf('?') < 0 ? '?' : '&';
+            url += apikey ? 'apikey='+apikey+'&' : '';
             if (version) {
-                url = url + (apikey ? '&' : '?') + 'version=' + version;
+                url += 'version=' + version + '&';
             }
-            console.log(url, version, apikey);
+            if (param) {
+                var value = getParam(param);
+                if (value) {
+                    url += param + '=' + value + '&';
+                }
+            }
             return url;
         };
+
     var staging = location.toString().indexOf('staging') > 0;
     var _ = window.app = {
         api: new Posterior({
@@ -34,7 +41,7 @@
             failure: function(e){ _.error(e); },
 
             '@service' : {
-                url: addKey('/'),
+                url: finish('/'),
                 auto: true,
                 then: function(service) {
                     D.query('[name=implementation_version]').innerHTML = service.implementation_version;
@@ -42,14 +49,14 @@
                 }
             },
             '@units': {
-                url: addKey('/units'),
+                url: finish('/units'),
                 saveResult: true,
                 responseData: function(list) {
                     return _.buildResource(list, 'units');
                 }
             },
             '@nutrients': {
-                url: addKey('/nutrients'),
+                url: finish('/nutrients'),
                 saveResult: true,
                 responseData: function(list) {
                     return _.buildResource(list, 'nutrients');
@@ -57,11 +64,11 @@
             },
             '@search': {
                 requires: ['app.api.units'],
-                url: addKey('/foods?query={query}&count={count}&start={start}&spell={spell}')
+                url: finish('/foods?query={query}&count={count}&start={start}&spell={spell}', 'filter')
             },
             '@view': {
                 requires: ['app.api.units', 'app.api.nutrients'],
-                url: addKey('/food/{0}')
+                url: finish('/food/{0}')
             },
             '@analyze': {
                 requires: ['app.api.nutrients', 'app.api.units'],
@@ -69,7 +76,7 @@
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.Foods+json'
                 },
-                url: addKey('/analysis')
+                url: finish('/analysis')
             },
             '@recommend': {
                 requires: ['app.api.nutrients', 'app.api.units'],
@@ -77,7 +84,7 @@
                 headers: {
                     'Content-Type': 'application/vnd.com.esha.data.PersonalProfile+json'
                 },
-                url: addKey('/recommendations'),
+                url: finish('/recommendations'),
             }
         }),
 
