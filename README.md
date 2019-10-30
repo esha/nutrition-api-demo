@@ -1,4 +1,4 @@
-First, install NodeJS 8 (It comes with NPM and might be easier to install with NVM)
+First, install NodeJS. It comes with NPM. Also, it might be easier to install with NVM to manage multiple versions.
 Then run these commands:
 ```
 git clone git@github.com:esha/wsdemo.git
