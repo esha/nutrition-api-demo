@@ -1,4 +1,7 @@
 First, install NodeJS. It comes with NPM. Also, it might be easier to install with NVM to manage multiple versions.
+
+Add ```APIKEY=myapikey``` as an environment variable.
+
 Then run these commands:
 ```
 git clone git@github.com:esha/wsdemo.git
