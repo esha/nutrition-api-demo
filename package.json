@@ -10,7 +10,7 @@
     "url": "git://github.com/esha/wsdemo.git"
   },
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "logfmt": "^1.2.1",
     "request": "^2.88.0"
   },
